@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Custom mobile and web app development from Rift Digital LLC. From MVP to full product launch — iOS, Android, and web applications.">
+    <title>App Development — Rift Digital LLC</title>
+    <link rel="icon" type="image/png" href="../favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0d001a; }
+        .hero-bg { background: radial-gradient(circle at 50% 10%, #0d0033 0%, #0d001a 70%); }
+        .digital-pattern {
+            background-image: radial-gradient(#6366f1 0.5px, transparent 0.5px), radial-gradient(#a855f7 0.5px, transparent 0.5px);
+            background-size: 80px 80px, 80px 80px;
+            background-position: 0 0, 40px 40px;
+        }
+        .text-gradient {
+            background-image: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent;
+        }
+        .glow-card {
+            background-color: #1a0033; border: 1px solid rgba(99,102,241,0.2); transition: all 0.3s ease;
+        }
+        .glow-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(99,102,241,0.25); border-color: rgba(99,102,241,0.45); }
+    </style>
+</head>
+<body class="text-white min-h-screen">
+
+    <!-- NAV -->
+    <header class="sticky top-0 z-50 bg-black/50 backdrop-blur-md border-b border-indigo-500/20 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="../" class="flex items-center space-x-3">
+                <img src="../logo.jpg" alt="Rift Digital LLC" class="h-10 w-auto">
+                <span class="text-lg font-bold tracking-wider text-purple-400">RIFT DIGITAL LLC</span>
+            </a>
+            <nav class="hidden md:flex space-x-8">
+                <a href="../#websites" class="text-gray-300 hover:text-indigo-400 transition text-sm font-medium">Websites & AI</a>
+                <a href="../#apps" class="text-gray-300 hover:text-indigo-400 transition text-sm font-medium">Apps</a>
+                <a href="../#products" class="text-gray-300 hover:text-indigo-400 transition text-sm font-medium">Digital Products</a>
+                <a href="../#properties" class="text-gray-300 hover:text-indigo-400 transition text-sm font-medium">Properties</a>
+                <a href="../#contact" class="text-gray-300 hover:text-indigo-400 transition text-sm font-medium">Contact</a>
+            </nav>
+            <a href="../" class="md:hidden text-indigo-400 text-sm font-medium">← Back</a>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- HERO -->
+        <section class="hero-bg digital-pattern py-24 md:py-32 text-center border-b border-indigo-500/30">
+            <div class="max-w-3xl mx-auto px-4">
+                <p class="text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-4">Rift Digital — Division 02</p>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-5 leading-tight">
+                    Apps Built to<br><span class="text-gradient">Retain & Scale.</span>
+                </h1>
+                <p class="text-lg text-gray-300 mb-8 max-w-xl mx-auto leading-relaxed">
+                    From MVP validation to full product launches — we build mobile and web applications that solve real problems and keep users coming back.
+                </p>
+                <a href="#get-started" class="inline-block px-8 py-3 text-lg font-semibold rounded-full bg-indigo-600 hover:bg-indigo-700 transition shadow-xl shadow-indigo-500/40 transform hover:scale-105">
+                    Start Your Project
+                </a>
+            </div>
+        </section>
+
+        <!-- CASE STUDY: MODY BALANCE -->
+        <section class="py-20 md:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glow-card rounded-2xl p-10 md:p-14">
+                <p class="text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-4">Featured Case Study</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white mb-4">Mody Balance<br><span class="text-gradient">Health & Wellness App</span></h2>
+                        <p class="text-gray-300 leading-relaxed mb-4">
+                            A full-cycle app development engagement from concept to launch. Mody Balance is a health and wellness application built around personalized tracking, clean UX, and a retention-focused design system.
+                        </p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            We managed strategy, UX design, frontend and backend development, and launch coordination — delivering a polished product that users actually come back to.
+                        </p>
+                        <a href="../Mody_Balance_Case_Study.pdf" target="_blank" rel="noopener noreferrer"
+                           class="inline-block px-6 py-3 font-semibold rounded-full bg-indigo-600 hover:bg-indigo-700 transition">
+                            Read the Case Study →
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-indigo-900/30 border border-indigo-500/30 p-5 rounded-xl text-center">
+                            <span class="text-2xl block mb-2">🎯</span>
+                            <p class="text-sm text-indigo-300 font-medium">Strategy</p>
+                        </div>
+                        <div class="bg-indigo-900/30 border border-indigo-500/30 p-5 rounded-xl text-center">
+                            <span class="text-2xl block mb-2">🎨</span>
+                            <p class="text-sm text-indigo-300 font-medium">UX Design</p>
+                        </div>
+                        <div class="bg-indigo-900/30 border border-indigo-500/30 p-5 rounded-xl text-center">
+                            <span class="text-2xl block mb-2">⚙️</span>
+                            <p class="text-sm text-indigo-300 font-medium">Development</p>
+                        </div>
+                        <div class="bg-indigo-900/30 border border-indigo-500/30 p-5 rounded-xl text-center">
+                            <span class="text-2xl block mb-2">🚀</span>
+                            <p class="text-sm text-indigo-300 font-medium">Launch</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICES -->
+        <section class="py-16 bg-[#14022a] border-y border-indigo-500/30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-center mb-4 text-indigo-400">What We Deliver</h2>
+                <p class="text-center text-gray-400 mb-12 max-w-xl mx-auto">Every app engagement is scoped around your goals, timeline, and users.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glow-card p-7 rounded-xl">
+                        <span class="text-2xl mb-3 block">📱</span>
+                        <h3 class="font-semibold text-white mb-2">Mobile Apps</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">iOS and Android native or cross-platform builds — optimized for performance, app store approval, and real-world usage patterns.</p>
+                    </div>
+                    <div class="glow-card p-7 rounded-xl">
+                        <span class="text-2xl mb-3 block">🧪</span>
+                        <h3 class="font-semibold text-white mb-2">MVP Builds</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Get to market fast with a focused MVP — enough to validate your concept, attract early users, and raise if needed.</p>
+                    </div>
+                    <div class="glow-card p-7 rounded-xl">
+                        <span class="text-2xl mb-3 block">🔗</span>
+                        <h3 class="font-semibold text-white mb-2">API & Backend</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Custom API development, third-party integrations, database architecture, and scalable backend infrastructure.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GET STARTED -->
+        <section id="get-started" class="py-20 md:py-24 max-w-3xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold text-indigo-400 mb-4">Have an App Idea?</h2>
+            <p class="text-gray-300 mb-8 leading-relaxed">Share your concept and we'll scope out what it takes to build it — timeline, tech stack, and cost estimate included.</p>
+            <a href="mailto:contact@riftdigital.ai?subject=App%20Development%20Inquiry"
+               class="inline-block px-8 py-3 text-lg font-semibold rounded-full bg-indigo-600 hover:bg-indigo-700 transition shadow-xl shadow-indigo-500/40 transform hover:scale-105 mb-4">
+                Email Us to Get Started
+            </a>
+            <p class="text-gray-500 text-sm">contact@riftdigital.ai · We typically respond within 24 hours.</p>
+        </section>
+
+    </main>
+
+    <footer class="bg-black/70 py-8 border-t border-indigo-500/20 text-center">
+        <a href="../" class="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition">← Back to Rift Digital</a>
+        <div class="mt-4 text-sm text-gray-600">&copy; <span id="year"></span> Rift Digital LLC. All rights reserved.</div>
+    </footer>
+
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
