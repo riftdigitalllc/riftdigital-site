@@ -3,17 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Rift Digital LLC — a multi-vertical brand operating across web & AI, app development, digital products, and property rentals.">
-    <title>Rift Digital LLC — Websites, Apps, Digital Products & Properties</title>
+    <meta name="description" content="Rift Digital LLC — websites and business automation that eliminate manual work. Stop losing time to copy-paste, follow-up, and repetitive tasks.">
+    <title>Rift Digital LLC — Websites & Business Automation</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0d001a; }
-
-        .hero-bg {
-            background: radial-gradient(circle at 50% 10%, #1a0033 0%, #0d001a 70%);
-        }
+        .hero-bg { background: radial-gradient(circle at 50% 10%, #1a0033 0%, #0d001a 70%); }
         .digital-pattern {
             background-image:
                 radial-gradient(#a855f7 0.5px, transparent 0.5px),
@@ -35,14 +32,20 @@
         }
         .glow-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.25), 0 0 15px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.25), 0 0 15px rgba(99, 102, 241, 0.3);
             border-color: rgba(168, 85, 247, 0.45);
         }
-        .division-icon {
-            font-size: 2.25rem;
-            line-height: 1;
-            margin-bottom: 1rem;
-            display: block;
+        .problem-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            background: rgba(168,85,247,0.12);
+            border: 1px solid rgba(168,85,247,0.3);
+            color: #c084fc;
         }
     </style>
 </head>
@@ -55,11 +58,9 @@
                 <img src="logo.jpg" alt="Rift Digital LLC" class="h-10 w-auto">
                 <span class="text-lg font-bold tracking-wider text-purple-400">RIFT DIGITAL LLC</span>
             </div>
-            <nav class="hidden md:flex space-x-8">
-                <a href="#websites" class="text-gray-300 hover:text-purple-400 transition duration-300 text-sm font-medium">Websites & AI</a>
-                <a href="#apps" class="text-gray-300 hover:text-purple-400 transition duration-300 text-sm font-medium">Apps</a>
-                <a href="#products" class="text-gray-300 hover:text-purple-400 transition duration-300 text-sm font-medium">Digital Products</a>
-                <a href="#properties" class="text-gray-300 hover:text-purple-400 transition duration-300 text-sm font-medium">Properties</a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#websites" class="text-gray-300 hover:text-purple-400 transition duration-300 text-sm font-medium">Websites</a>
+                <a href="#automation" class="text-gray-300 hover:text-purple-400 transition duration-300 text-sm font-medium">Automation & AI</a>
                 <a href="#contact" class="text-gray-300 hover:text-purple-400 transition duration-300 text-sm font-medium">Contact</a>
             </nav>
             <button id="mobile-menu-button" class="md:hidden text-gray-300 focus:outline-none">
@@ -67,10 +68,8 @@
             </button>
         </div>
         <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-2 border-t border-purple-500/20 bg-black/70">
-            <a href="#websites" class="block text-gray-300 hover:text-purple-400 py-1">Websites & AI</a>
-            <a href="#apps" class="block text-gray-300 hover:text-purple-400 py-1">Apps</a>
-            <a href="#products" class="block text-gray-300 hover:text-purple-400 py-1">Digital Products</a>
-            <a href="#properties" class="block text-gray-300 hover:text-purple-400 py-1">Properties</a>
+            <a href="#websites" class="block text-gray-300 hover:text-purple-400 py-1">Websites</a>
+            <a href="#automation" class="block text-gray-300 hover:text-purple-400 py-1">Automation & AI</a>
             <a href="#contact" class="block text-gray-300 hover:text-purple-400 py-1">Contact</a>
         </div>
     </header>
@@ -80,209 +79,202 @@
         <!-- ===== HERO ===== -->
         <section class="hero-bg digital-pattern py-24 md:py-36 text-center border-b border-purple-500/30">
             <div class="max-w-4xl mx-auto px-4">
-                <p class="text-xs font-semibold tracking-widest text-purple-400 uppercase mb-4">Rift Digital LLC</p>
+                <p class="text-xs font-semibold tracking-widest text-purple-400 uppercase mb-5">Rift Digital LLC</p>
                 <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold mb-6 leading-tight">
-                    One Roof.<br>
-                    <span class="text-gradient">Multiple Revenue Streams.</span>
+                    Your Business,<br>
+                    <span class="text-gradient">Without the Busywork.</span>
                 </h1>
                 <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-                    We build and operate across four verticals — web & AI services, app development, digital products, and property rentals. Built to perform. Designed to scale.
+                    We build websites and deploy intelligent automation that handles the repetitive, manual work draining your team's time — so you can focus on what actually moves the business forward.
                 </p>
-
-                <!-- Division Quick-Links -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
-                    <a href="#websites" class="px-4 py-3 rounded-lg bg-purple-600/20 border border-purple-500/40 hover:bg-purple-600/40 transition text-sm font-semibold text-purple-300">
-                        🌐 Websites & AI
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <a href="#automation" class="px-8 py-3 text-base font-semibold rounded-full bg-purple-600 hover:bg-purple-700 transition shadow-xl shadow-purple-500/40 transform hover:scale-105">
+                        See How We Help
                     </a>
-                    <a href="#apps" class="px-4 py-3 rounded-lg bg-indigo-600/20 border border-indigo-500/40 hover:bg-indigo-600/40 transition text-sm font-semibold text-indigo-300">
-                        📱 Apps
-                    </a>
-                    <a href="#products" class="px-4 py-3 rounded-lg bg-purple-600/20 border border-purple-500/40 hover:bg-purple-600/40 transition text-sm font-semibold text-purple-300">
-                        🛍️ Digital Products
-                    </a>
-                    <a href="#properties" class="px-4 py-3 rounded-lg bg-indigo-600/20 border border-indigo-500/40 hover:bg-indigo-600/40 transition text-sm font-semibold text-indigo-300">
-                        🏢 Properties
+                    <a href="#contact" class="px-8 py-3 text-base font-semibold rounded-full border border-purple-500/50 text-purple-300 hover:bg-purple-600/20 transition">
+                        Let's Talk
                     </a>
                 </div>
             </div>
         </section>
 
-        <!-- ===== DIVISION 1: WEBSITES & AI ===== -->
+        <!-- ===== PROBLEM STATEMENT ===== -->
+        <section class="py-16 md:py-20 bg-[#14022a] border-b border-purple-500/20">
+            <div class="max-w-5xl mx-auto px-4 text-center">
+                <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">Sound familiar?</h2>
+                <p class="text-gray-400 mb-10 max-w-xl mx-auto">Most businesses lose hours every week to work that shouldn't require a human.</p>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-3xl mx-auto">
+                    <div class="glow-card rounded-lg px-4 py-4 text-sm text-gray-300">"We copy data between systems all day."</div>
+                    <div class="glow-card rounded-lg px-4 py-4 text-sm text-gray-300">"Follow-up falls through the cracks."</div>
+                    <div class="glow-card rounded-lg px-4 py-4 text-sm text-gray-300">"Reports take hours to pull together."</div>
+                    <div class="glow-card rounded-lg px-4 py-4 text-sm text-gray-300">"Intake forms go nowhere automatically."</div>
+                    <div class="glow-card rounded-lg px-4 py-4 text-sm text-gray-300">"We have no real web presence."</div>
+                    <div class="glow-card rounded-lg px-4 py-4 text-sm text-gray-300">"Our website doesn't book or take payments."</div>
+                </div>
+                <p class="text-purple-400 font-semibold mt-10 text-lg">That's what we fix.</p>
+            </div>
+        </section>
+
+        <!-- ===== SERVICE 1: WEBSITES ===== -->
         <section id="websites" class="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div>
-                    <p class="text-xs font-semibold tracking-widest text-purple-400 uppercase mb-3">Division 01</p>
-                    <h2 class="text-4xl font-bold text-white mb-5">Websites &<br><span class="text-gradient">AI Integration</span></h2>
+                    <span class="problem-tag mb-4 inline-block">Service 01</span>
+                    <h2 class="text-4xl font-bold text-white mt-3 mb-5">
+                        A Website That<br><span class="text-gradient">Works for You.</span>
+                    </h2>
                     <p class="text-gray-300 text-lg leading-relaxed mb-6">
-                        We design and build high-performance websites that convert — with intelligent AI workflows layered in to save time and drive revenue. From small business buildouts to custom automation, we close the gap between where you are and where your business needs to be online.
+                        Your website shouldn't just look good — it should be doing work. We build sites that take bookings, process payments, answer questions, and convert visitors, without you lifting a finger after launch.
+                    </p>
+                    <p class="text-gray-400 leading-relaxed mb-8">
+                        We specialize in small and mid-size businesses that either have no web presence, or have a site that isn't pulling its weight. We move fast, build clean, and hand you something that actually runs.
                     </p>
                     <ul class="space-y-3 text-gray-400 mb-8">
-                        <li class="flex items-start gap-3"><span class="text-purple-400 mt-0.5">✓</span> Custom website design & development</li>
-                        <li class="flex items-start gap-3"><span class="text-purple-400 mt-0.5">✓</span> Booking systems, payment integration & automation</li>
-                        <li class="flex items-start gap-3"><span class="text-purple-400 mt-0.5">✓</span> AI assistant & workflow integration</li>
-                        <li class="flex items-start gap-3"><span class="text-purple-400 mt-0.5">✓</span> SEO, speed optimization & mobile-first builds</li>
+                        <li class="flex items-start gap-3"><span class="text-purple-400 mt-0.5 font-bold">✓</span> Fast, mobile-first design built around your customer</li>
+                        <li class="flex items-start gap-3"><span class="text-purple-400 mt-0.5 font-bold">✓</span> Online booking, scheduling, and payment processing</li>
+                        <li class="flex items-start gap-3"><span class="text-purple-400 mt-0.5 font-bold">✓</span> SEO-ready from day one — not bolted on after</li>
+                        <li class="flex items-start gap-3"><span class="text-purple-400 mt-0.5 font-bold">✓</span> Clean handoffs — you own it, we support it</li>
                     </ul>
                     <a href="websites-ai/" class="inline-block px-8 py-3 font-semibold rounded-full bg-purple-600 hover:bg-purple-700 transition shadow-xl shadow-purple-500/30 transform hover:scale-105">
-                        Explore Web & AI Services →
+                        Learn More About Websites →
                     </a>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-4">
                     <div class="glow-card p-6 rounded-xl">
-                        <span class="text-purple-400 text-2xl mb-3 block">⚡</span>
-                        <h4 class="font-semibold text-white mb-1">Fast Turnarounds</h4>
-                        <p class="text-gray-400 text-sm">Websites live in days, not months. We work efficiently without cutting corners.</p>
+                        <span class="text-purple-400 text-2xl mb-3 block">🎯</span>
+                        <h4 class="font-semibold text-white mb-1">Conversion First</h4>
+                        <p class="text-gray-400 text-sm">Every page is built around what the visitor needs to do next — not just how it looks.</p>
                     </div>
                     <div class="glow-card p-6 rounded-xl">
-                        <span class="text-indigo-400 text-2xl mb-3 block">🤖</span>
-                        <h4 class="font-semibold text-white mb-1">AI-Enhanced</h4>
-                        <p class="text-gray-400 text-sm">Intelligent chatbots, automated follow-ups, and smart booking flows built in.</p>
+                        <span class="text-indigo-400 text-2xl mb-3 block">⚡</span>
+                        <h4 class="font-semibold text-white mb-1">Fast Delivery</h4>
+                        <p class="text-gray-400 text-sm">Days, not months. We scope it tight, build it right, and get you live.</p>
                     </div>
                     <div class="glow-card p-6 rounded-xl">
-                        <span class="text-purple-400 text-2xl mb-3 block">📈</span>
-                        <h4 class="font-semibold text-white mb-1">Built to Convert</h4>
-                        <p class="text-gray-400 text-sm">Every page is designed around your customer journey and business goal.</p>
+                        <span class="text-purple-400 text-2xl mb-3 block">📱</span>
+                        <h4 class="font-semibold text-white mb-1">Mobile-First</h4>
+                        <p class="text-gray-400 text-sm">Your customers are on their phones. We build there first, then everywhere else.</p>
                     </div>
                     <div class="glow-card p-6 rounded-xl">
-                        <span class="text-indigo-400 text-2xl mb-3 block">🔒</span>
-                        <h4 class="font-semibold text-white mb-1">Secure & Reliable</h4>
-                        <p class="text-gray-400 text-sm">SSL, optimized hosting, and clean code that performs under real traffic.</p>
+                        <span class="text-indigo-400 text-2xl mb-3 block">💳</span>
+                        <h4 class="font-semibold text-white mb-1">Payments Built In</h4>
+                        <p class="text-gray-400 text-sm">Booking systems and payment flows integrated so money moves without you in the middle.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ===== DIVISION 2: APPS ===== -->
-        <section id="apps" class="py-20 md:py-28 bg-[#14022a] border-y border-purple-500/30">
+        <!-- ===== SERVICE 2: AUTOMATION & AI ===== -->
+        <section id="automation" class="py-20 md:py-28 bg-[#14022a] border-y border-purple-500/30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div class="order-2 lg:order-1">
-                        <div class="glow-card rounded-xl p-8">
-                            <p class="text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-2">Case Study</p>
-                            <h4 class="text-xl font-bold text-white mb-3">Mody Balance — Health & Wellness App</h4>
-                            <p class="text-gray-400 text-sm leading-relaxed mb-5">
-                                A full-cycle app development engagement: concept, UX design, build, and launch. Mody Balance delivers personalized wellness tracking with a clean, retention-focused interface.
-                            </p>
-                            <a href="Mody_Balance_Case_Study.pdf" target="_blank" rel="noopener noreferrer"
-                               class="inline-block px-5 py-2 text-sm font-semibold rounded-full bg-indigo-600 hover:bg-indigo-700 transition">
-                                View Case Study →
-                            </a>
+                        <div class="space-y-4">
+                            <div class="glow-card rounded-xl p-5 flex items-start gap-4">
+                                <span class="text-2xl mt-0.5">📋</span>
+                                <div>
+                                    <h4 class="font-semibold text-white mb-1">Form & Intake Automation</h4>
+                                    <p class="text-gray-400 text-sm leading-relaxed">A customer fills out a form — your CRM updates, a task gets created, a confirmation goes out, and a follow-up is scheduled. No one touches it.</p>
+                                </div>
+                            </div>
+                            <div class="glow-card rounded-xl p-5 flex items-start gap-4">
+                                <span class="text-2xl mt-0.5">📨</span>
+                                <div>
+                                    <h4 class="font-semibold text-white mb-1">Automated Follow-Up</h4>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Leads, quotes, and proposals that follow up on their own — timed, personalized, and consistent. No one falls through the cracks.</p>
+                                </div>
+                            </div>
+                            <div class="glow-card rounded-xl p-5 flex items-start gap-4">
+                                <span class="text-2xl mt-0.5">📊</span>
+                                <div>
+                                    <h4 class="font-semibold text-white mb-1">Reporting & Summaries</h4>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Automated reports and AI-generated summaries delivered on schedule — no manual data pulling, no hours lost to Excel.</p>
+                                </div>
+                            </div>
+                            <div class="glow-card rounded-xl p-5 flex items-start gap-4">
+                                <span class="text-2xl mt-0.5">🤖</span>
+                                <div>
+                                    <h4 class="font-semibold text-white mb-1">AI Assistants & Chat</h4>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Intelligent assistants that answer questions, qualify leads, and handle common requests — available 24/7 without adding headcount.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="order-1 lg:order-2">
-                        <p class="text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-3">Division 02</p>
-                        <h2 class="text-4xl font-bold text-white mb-5"><span class="text-gradient">App</span><br>Development</h2>
+                        <span class="problem-tag mb-4 inline-block">Service 02</span>
+                        <h2 class="text-4xl font-bold text-white mt-3 mb-5">
+                            Stop Paying People<br><span class="text-gradient">to Do What a System Can.</span>
+                        </h2>
                         <p class="text-gray-300 text-lg leading-relaxed mb-6">
-                            From concept to launch, we build mobile and web applications that solve real problems and retain users. We handle the entire product lifecycle — strategy, design, development, and post-launch support.
+                            If your team is copying data between systems, manually sending follow-ups, or pulling together reports by hand — you're not running a business, you're running a hamster wheel.
                         </p>
-                        <ul class="space-y-3 text-gray-400 mb-8">
-                            <li class="flex items-start gap-3"><span class="text-indigo-400 mt-0.5">✓</span> iOS & Android mobile app development</li>
-                            <li class="flex items-start gap-3"><span class="text-indigo-400 mt-0.5">✓</span> UI/UX design & user flow strategy</li>
-                            <li class="flex items-start gap-3"><span class="text-indigo-400 mt-0.5">✓</span> MVP builds for startups & entrepreneurs</li>
-                            <li class="flex items-start gap-3"><span class="text-indigo-400 mt-0.5">✓</span> API integrations & backend architecture</li>
-                        </ul>
-                        <a href="apps/" class="inline-block px-8 py-3 font-semibold rounded-full bg-indigo-600 hover:bg-indigo-700 transition shadow-xl shadow-indigo-500/30 transform hover:scale-105">
-                            Explore App Development →
+                        <p class="text-gray-400 leading-relaxed mb-8">
+                            We identify the exact points where manual work is happening and build the systems to handle it — so your people spend time on decisions, not data entry.
+                        </p>
+                        <a href="automation/" class="inline-block px-8 py-3 font-semibold rounded-full bg-indigo-600 hover:bg-indigo-700 transition shadow-xl shadow-indigo-500/30 transform hover:scale-105">
+                            See What We Automate →
                         </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ===== DIVISION 3: DIGITAL PRODUCTS ===== -->
-        <section id="products" class="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-14">
-                <p class="text-xs font-semibold tracking-widest text-purple-400 uppercase mb-3">Division 03</p>
-                <h2 class="text-4xl font-bold text-white mb-4">Digital <span class="text-gradient">Products</span></h2>
-                <p class="text-gray-300 max-w-2xl mx-auto text-lg leading-relaxed">
-                    Three product streams — travel itineraries, digital downloads, and branded apparel — all built to generate revenue without trading time for dollars.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Stream 1: Travel Itineraries -->
-                <div class="glow-card rounded-xl p-8 flex flex-col">
-                    <span class="division-icon">🗺️</span>
-                    <h3 class="text-xl font-bold text-purple-300 mb-3">Travel Itineraries</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed flex-1 mb-6">
-                        Custom, logistics-intelligent travel plans delivered within 24–48 hours. Weekend escapes, week-long adventures, and extended expeditions — starting at $15.
-                    </p>
-                    <a href="https://rifttravels.com/custom-travel-itinerary/" target="_blank" rel="noopener"
-                       class="inline-block px-5 py-2 text-sm font-semibold rounded-full bg-purple-600 hover:bg-purple-700 transition text-center">
-                        Shop Itineraries at Rift Travels →
-                    </a>
+        <!-- ===== HOW IT WORKS ===== -->
+        <section class="py-20 md:py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold text-white mb-4">How We Work</h2>
+            <p class="text-gray-400 max-w-xl mx-auto mb-14">No long discovery phases. No bloated proposals. We get in, understand the problem, and build the fix.</p>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="relative">
+                    <div class="w-10 h-10 rounded-full bg-purple-600/30 border border-purple-500/50 flex items-center justify-center text-purple-300 font-bold text-sm mx-auto mb-4">01</div>
+                    <h4 class="font-semibold text-white mb-2">Discovery Call</h4>
+                    <p class="text-gray-400 text-sm">We talk through what's taking too long, what's breaking, and where the friction is.</p>
                 </div>
+                <div class="relative">
+                    <div class="w-10 h-10 rounded-full bg-purple-600/30 border border-purple-500/50 flex items-center justify-center text-purple-300 font-bold text-sm mx-auto mb-4">02</div>
+                    <h4 class="font-semibold text-white mb-2">Scoping</h4>
+                    <p class="text-gray-400 text-sm">We identify exactly what needs to be built and give you a clear scope and timeline.</p>
+                </div>
+                <div class="relative">
+                    <div class="w-10 h-10 rounded-full bg-purple-600/30 border border-purple-500/50 flex items-center justify-center text-purple-300 font-bold text-sm mx-auto mb-4">03</div>
+                    <h4 class="font-semibold text-white mb-2">Build & Test</h4>
+                    <p class="text-gray-400 text-sm">We build it, stress test it, and make sure it actually works under real conditions.</p>
+                </div>
+                <div class="relative">
+                    <div class="w-10 h-10 rounded-full bg-purple-600/30 border border-purple-500/50 flex items-center justify-center text-purple-300 font-bold text-sm mx-auto mb-4">04</div>
+                    <h4 class="font-semibold text-white mb-2">Hand Off & Support</h4>
+                    <p class="text-gray-400 text-sm">You get a working system you understand. We stay available for tuning and expansion.</p>
+                </div>
+            </div>
+        </section>
 
-                <!-- Stream 2: Digital Downloads -->
-                <div class="glow-card rounded-xl p-8 flex flex-col">
-                    <span class="division-icon">📄</span>
-                    <h3 class="text-xl font-bold text-indigo-300 mb-3">Digital Downloads</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed flex-1 mb-6">
-                        eBooks, templates, guides, and PDFs available through our Creatyl storefront. Practical resources built from real experience.
-                    </p>
+        <!-- ===== ALSO FROM RIFT DIGITAL ===== -->
+        <section class="py-14 bg-[#14022a] border-y border-purple-500/20">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <p class="text-xs font-semibold tracking-widest text-gray-500 uppercase text-center mb-8">Also from Rift Digital</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <a href="https://rifttravels.com" target="_blank" rel="noopener"
+                       class="glow-card rounded-xl p-5 text-center hover:no-underline group">
+                        <span class="text-2xl block mb-2">🗺️</span>
+                        <p class="font-medium text-gray-300 text-sm group-hover:text-purple-300 transition">Rift Travels</p>
+                        <p class="text-gray-600 text-xs mt-1">Custom travel itineraries</p>
+                    </a>
                     <a href="REPLACE_CREATYL_URL" target="_blank" rel="noopener"
-                       class="inline-block px-5 py-2 text-sm font-semibold rounded-full bg-indigo-600 hover:bg-indigo-700 transition text-center">
-                        Browse on Creatyl →
+                       class="glow-card rounded-xl p-5 text-center hover:no-underline group">
+                        <span class="text-2xl block mb-2">📄</span>
+                        <p class="font-medium text-gray-300 text-sm group-hover:text-purple-300 transition">Digital Downloads</p>
+                        <p class="text-gray-600 text-xs mt-1">eBooks, guides & templates</p>
                     </a>
-                </div>
-
-                <!-- Stream 3: Rift Clothing -->
-                <div class="glow-card rounded-xl p-8 flex flex-col">
-                    <span class="division-icon">👕</span>
-                    <h3 class="text-xl font-bold text-purple-300 mb-3">Rift Clothing</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed flex-1 mb-6">
-                        Branded apparel and merchandise for the culture. Shop the Rift Clothing collection on our Shopify storefront.
-                    </p>
                     <a href="REPLACE_SHOPIFY_URL" target="_blank" rel="noopener"
-                       class="inline-block px-5 py-2 text-sm font-semibold rounded-full bg-purple-600 hover:bg-purple-700 transition text-center">
-                        Shop Rift Clothing →
+                       class="glow-card rounded-xl p-5 text-center hover:no-underline group">
+                        <span class="text-2xl block mb-2">👕</span>
+                        <p class="font-medium text-gray-300 text-sm group-hover:text-purple-300 transition">Rift Supply Co.</p>
+                        <p class="text-gray-600 text-xs mt-1">Shirts & printed apparel</p>
                     </a>
-                </div>
-            </div>
-
-            <div class="text-center mt-10">
-                <a href="products/" class="inline-block px-8 py-3 font-semibold rounded-full border border-purple-500/50 text-purple-300 hover:bg-purple-600/20 transition">
-                    View All Digital Products →
-                </a>
-            </div>
-        </section>
-
-        <!-- ===== DIVISION 4: RIFT PROPERTIES ===== -->
-        <section id="properties" class="py-20 md:py-28 bg-[#14022a] border-y border-purple-500/30">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    <div>
-                        <p class="text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-3">Division 04</p>
-                        <h2 class="text-4xl font-bold text-white mb-5">Rift<br><span class="text-gradient">Properties</span></h2>
-                        <p class="text-gray-300 text-lg leading-relaxed mb-6">
-                            Professionally managed short-term and corporate rental properties. Designed for business travelers, extended stays, and teams that need more than a hotel room.
-                        </p>
-                        <ul class="space-y-3 text-gray-400 mb-8">
-                            <li class="flex items-start gap-3"><span class="text-indigo-400 mt-0.5">✓</span> Corporate & extended-stay accommodations</li>
-                            <li class="flex items-start gap-3"><span class="text-indigo-400 mt-0.5">✓</span> Fully furnished, move-in ready properties</li>
-                            <li class="flex items-start gap-3"><span class="text-indigo-400 mt-0.5">✓</span> Flexible short-term & monthly terms</li>
-                            <li class="flex items-start gap-3"><span class="text-indigo-400 mt-0.5">✓</span> Professional management & responsive service</li>
-                        </ul>
-                        <a href="properties/" class="inline-block px-8 py-3 font-semibold rounded-full bg-indigo-600 hover:bg-indigo-700 transition shadow-xl shadow-indigo-500/30 transform hover:scale-105">
-                            View Rift Properties →
-                        </a>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="glow-card p-6 rounded-xl col-span-2">
-                            <span class="text-indigo-400 text-2xl mb-3 block">🏢</span>
-                            <h4 class="font-semibold text-white mb-1">Corporate Stays</h4>
-                            <p class="text-gray-400 text-sm">Comfortable, fully-equipped spaces for professionals on assignment, project teams, and business travelers who value quality over a chain hotel.</p>
-                        </div>
-                        <div class="glow-card p-6 rounded-xl">
-                            <span class="text-purple-400 text-2xl mb-3 block">📅</span>
-                            <h4 class="font-semibold text-white mb-1">Flexible Terms</h4>
-                            <p class="text-gray-400 text-sm">Short stays to monthly arrangements — book what you need.</p>
-                        </div>
-                        <div class="glow-card p-6 rounded-xl">
-                            <span class="text-indigo-400 text-2xl mb-3 block">✅</span>
-                            <h4 class="font-semibold text-white mb-1">Move-In Ready</h4>
-                            <p class="text-gray-400 text-sm">Fully furnished. Wi-Fi, utilities, and amenities included.</p>
-                        </div>
-                    </div>
+                    <a href="properties/" class="glow-card rounded-xl p-5 text-center hover:no-underline group">
+                        <span class="text-2xl block mb-2">🏢</span>
+                        <p class="font-medium text-gray-300 text-sm group-hover:text-purple-300 transition">Rift Properties</p>
+                        <p class="text-gray-600 text-xs mt-1">Corporate & short-term rentals</p>
+                    </a>
                 </div>
             </div>
         </section>
@@ -291,26 +283,21 @@
 
     <!-- ===== FOOTER / CONTACT ===== -->
     <footer id="contact" class="bg-black/70 py-14 border-t border-purple-500/20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="max-w-3xl mx-auto px-4 text-center">
             <img src="logo.jpg" alt="Rift Digital LLC" class="h-12 w-auto mx-auto mb-5 opacity-80">
-            <h3 class="text-2xl font-bold text-purple-400 mb-3">Ready to Build Something?</h3>
-            <p class="text-gray-400 mb-8 max-w-lg mx-auto">Whether it's a website, an app, a digital product, or a property inquiry — let's connect.</p>
+            <h3 class="text-2xl font-bold text-purple-400 mb-3">Let's Solve Something.</h3>
+            <p class="text-gray-400 mb-8 max-w-md mx-auto">Tell us what's taking too long or what's broken. We'll tell you how we'd fix it.</p>
             <a href="mailto:contact@riftdigital.ai"
                class="inline-block px-8 py-3 font-semibold rounded-full bg-purple-600 hover:bg-purple-700 transition shadow-lg shadow-purple-500/40 mb-10">
                 contact@riftdigital.ai
             </a>
-
-            <!-- Division Links -->
-            <div class="flex flex-wrap justify-center gap-6 text-sm text-gray-500 mb-8">
-                <a href="#websites" class="hover:text-purple-400 transition">Websites & AI</a>
-                <a href="#apps" class="hover:text-purple-400 transition">Apps</a>
-                <a href="#products" class="hover:text-purple-400 transition">Digital Products</a>
-                <a href="#properties" class="hover:text-purple-400 transition">Properties</a>
+            <div class="flex flex-wrap justify-center gap-6 text-sm text-gray-600 mb-8">
+                <a href="#websites" class="hover:text-purple-400 transition">Websites</a>
+                <a href="#automation" class="hover:text-purple-400 transition">Automation & AI</a>
+                <a href="properties/" class="hover:text-purple-400 transition">Rift Properties</a>
+                <a href="products/" class="hover:text-purple-400 transition">Digital Products</a>
             </div>
-
-            <div class="text-sm text-gray-600">
-                &copy; <span id="year"></span> Rift Digital LLC. All rights reserved.
-            </div>
+            <div class="text-sm text-gray-600">&copy; <span id="year"></span> Rift Digital LLC. All rights reserved.</div>
         </div>
     </footer>
 
