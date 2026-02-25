@@ -45,6 +45,19 @@
             box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3), 0 0 15px rgba(99, 102, 241, 0.35);
             border-color: rgba(168, 85, 247, 0.6);
         }
+        .spotlight-card {
+            background: linear-gradient(135deg, #1e0845 0%, #2d1060 100%);
+            border: 1px solid rgba(168, 85, 247, 0.45);
+            position: relative;
+            overflow: hidden;
+        }
+        .spotlight-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #a855f7, #6366f1, #a855f7);
+        }
         .problem-tag {
             display: inline-block;
             font-size: 0.7rem;
@@ -122,6 +135,52 @@
                     <div class="glow-card rounded-lg px-4 py-4 text-sm text-gray-300">"Our website doesn't book or take payments."</div>
                 </div>
                 <p class="text-purple-400 font-semibold mt-10 text-lg">That's what we fix.</p>
+            </div>
+        </section>
+
+        <!-- ===== FEATURED SOLUTION: AI PHONE SECRETARY ===== -->
+        <section class="py-16 md:py-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="spotlight-card rounded-2xl p-8 md:p-12">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                    <div>
+                        <p class="text-xs font-semibold tracking-widest text-purple-300 uppercase mb-4">Featured Solution</p>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4 leading-tight">
+                            Your Business Answers<br><span class="text-gradient">Every Call. Even When You Don't.</span>
+                        </h2>
+                        <p class="text-gray-300 text-lg leading-relaxed mb-6">
+                            An AI phone secretary that picks up, speaks naturally, and handles your callers — scheduling appointments, answering FAQs, taking messages, and qualifying leads. 24/7, no voicemail, no hold music, no missed opportunities.
+                        </p>
+                        <p class="text-gray-400 leading-relaxed mb-8">
+                            Most small businesses lose customers the moment a call goes unanswered. This fixes that — without hiring a receptionist.
+                        </p>
+                        <a href="mailto:contact@riftdigital.ai?subject=AI%20Phone%20Secretary%20Inquiry"
+                           class="inline-block px-8 py-3 font-semibold rounded-full bg-purple-600 hover:bg-purple-700 transition shadow-xl shadow-purple-500/40 transform hover:scale-105">
+                            Ask About AI Phone Answering →
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-black/30 border border-purple-500/20 rounded-xl p-5">
+                            <span class="text-2xl block mb-3">📞</span>
+                            <h4 class="font-semibold text-white text-sm mb-1">Never Miss a Call</h4>
+                            <p class="text-gray-400 text-xs leading-relaxed">Every inbound call gets answered — nights, weekends, holidays. No exceptions.</p>
+                        </div>
+                        <div class="bg-black/30 border border-purple-500/20 rounded-xl p-5">
+                            <span class="text-2xl block mb-3">📅</span>
+                            <h4 class="font-semibold text-white text-sm mb-1">Books Appointments</h4>
+                            <p class="text-gray-400 text-xs leading-relaxed">Callers can schedule directly during the call — synced to your calendar automatically.</p>
+                        </div>
+                        <div class="bg-black/30 border border-purple-500/20 rounded-xl p-5">
+                            <span class="text-2xl block mb-3">🎯</span>
+                            <h4 class="font-semibold text-white text-sm mb-1">Qualifies Leads</h4>
+                            <p class="text-gray-400 text-xs leading-relaxed">Asks your qualifying questions and routes serious prospects to you — filters out the noise.</p>
+                        </div>
+                        <div class="bg-black/30 border border-purple-500/20 rounded-xl p-5">
+                            <span class="text-2xl block mb-3">🗒️</span>
+                            <h4 class="font-semibold text-white text-sm mb-1">Takes Messages</h4>
+                            <p class="text-gray-400 text-xs leading-relaxed">Full call summaries and messages sent to you instantly — no more checking voicemail.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
