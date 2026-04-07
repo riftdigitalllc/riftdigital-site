@@ -109,7 +109,9 @@
 
     /* -- Hero ---------------------------------- */
     #hero {
-      background: linear-gradient(150deg, var(--navy-deep) 0%, var(--navy) 55%, #1a3a4a 100%);
+      background:
+        linear-gradient(150deg, rgba(15,30,56,0.87) 0%, rgba(27,42,74,0.80) 55%, rgba(26,58,74,0.87) 100%),
+        url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1600&q=80') center/cover no-repeat;
       color: var(--white);
       padding: 96px 5% 88px;
       text-align: center;
@@ -122,7 +124,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background-image: radial-gradient(rgba(58,173,173,0.12) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(58,173,173,0.10) 1px, transparent 1px);
       background-size: 32px 32px;
       pointer-events: none;
     }
