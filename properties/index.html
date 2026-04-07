@@ -1,154 +1,718 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Rift Properties — professionally managed short-term and corporate rental properties. Fully furnished, flexible terms, move-in ready.">
-    <title>Rift Properties — Rift Digital LLC</title>
-    <link rel="icon" type="image/png" href="../favicon.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0d001a; }
-        .hero-bg { background: radial-gradient(circle at 50% 10%, #0d0033 0%, #0d001a 70%); }
-        .digital-pattern {
-            background-image: radial-gradient(#6366f1 0.5px, transparent 0.5px), radial-gradient(#a855f7 0.5px, transparent 0.5px);
-            background-size: 80px 80px, 80px 80px;
-            background-position: 0 0, 40px 40px;
-        }
-        .text-gradient {
-            background-image: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent;
-        }
-        .glow-card { background-color: #1a0033; border: 1px solid rgba(99,102,241,0.2); transition: all 0.3s ease; }
-        .glow-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(99,102,241,0.25); border-color: rgba(99,102,241,0.45); }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Rift Properties &mdash; Professional furnished housing provider for apartment communities. We partner with leasing offices to stabilize occupancy." />
+  <title>Rift Properties | Corporate Housing Partner</title>
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* -- Reset --------------------------------- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* -- Brand Tokens -------------------------- */
+    :root {
+      --navy:        #1B2A4A;
+      --navy-deep:   #0f1e38;
+      --teal:        #2A8C8C;
+      --teal-light:  #3AADAD;
+      --charcoal:    #2D3035;
+      --beige:       #F5F0E8;
+      --beige-mid:   #EDE8DC;
+      --white:       #FFFFFF;
+      --grey:        #5A6475;
+      --grey-light:  #8A94A6;
+      --border:      #DDD8CE;
+      --shadow-sm:   0 2px 12px rgba(27,42,74,0.08);
+      --shadow-md:   0 6px 28px rgba(27,42,74,0.12);
+      --radius:      12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--white);
+      color: var(--charcoal);
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* -- Nav ----------------------------------- */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    /* -- Logo Mark SVG ------------------------- */
+    .logo-mark {
+      width: 44px;
+      height: 50px;
+      flex-shrink: 0;
+    }
+
+    .nav-wordmark {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+      gap: 2px;
+    }
+    .nav-wordmark .w-rift {
+      font-size: 19px;
+      font-weight: 900;
+      color: var(--charcoal);
+      letter-spacing: 0.08em;
+    }
+    .nav-wordmark .w-prop {
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    .nav-back {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--grey);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--navy); }
+    .nav-back svg { width: 14px; height: 14px; }
+
+    /* -- Hero ---------------------------------- */
+    #hero {
+      background: linear-gradient(150deg, var(--navy-deep) 0%, var(--navy) 55%, #1a3a4a 100%);
+      color: var(--white);
+      padding: 96px 5% 88px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle dot pattern */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(58,173,173,0.12) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+
+    /* teal glow orb */
+    #hero::after {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(42,140,140,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(58,173,173,0.15);
+      border: 1px solid rgba(58,173,173,0.35);
+      color: var(--teal-light);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+    }
+
+    #hero h1 {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      max-width: 780px;
+      margin: 0 auto 24px;
+    }
+
+    #hero h1 .accent {
+      background: linear-gradient(90deg, var(--teal-light), #5ecfcf);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    #hero p {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: rgba(255,255,255,0.72);
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.75;
+    }
+
+    .hero-btns {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--teal);
+      color: var(--white);
+      text-decoration: none;
+      padding: 14px 34px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      transition: background 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--teal-light); transform: translateY(-2px); }
+
+    .btn-ghost {
+      background: transparent;
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      padding: 14px 34px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      border: 1.5px solid rgba(255,255,255,0.22);
+      transition: border-color 0.2s, background 0.2s;
+      display: inline-block;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.07); }
+
+    /* -- Section Shared ------------------------ */
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.3rem);
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+
+    .section-sub {
+      color: var(--grey);
+      font-size: 1.02rem;
+      line-height: 1.75;
+      max-width: 520px;
+    }
+
+    /* -- Value Section ------------------------- */
+    #value {
+      background: var(--beige);
+      padding: 88px 5%;
+    }
+
+    .value-head {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .value-head .section-sub { margin: 0 auto; }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 26px;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .value-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 38px 32px;
+      box-shadow: var(--shadow-sm);
+      border-top: 4px solid transparent;
+      border-image: linear-gradient(90deg, var(--navy), var(--teal)) 1;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .value-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+
+    .card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--navy), var(--teal));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
+    .card-icon svg {
+      width: 26px; height: 26px;
+      fill: none; stroke: white;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .value-card h3 {
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .value-card p {
+      color: var(--grey);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* -- About Section ------------------------- */
+    #about {
+      background: var(--white);
+      padding: 88px 5%;
+    }
+
+    .about-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .about-wrap { grid-template-columns: 1fr; gap: 40px; }
+    }
+
+    .about-text p {
+      color: var(--grey);
+      line-height: 1.8;
+      margin-bottom: 18px;
+    }
+
+    .proof-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      margin-top: 28px;
+    }
+    .proof-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      font-size: 0.95rem;
+      color: var(--charcoal);
+      font-weight: 500;
+    }
+    .proof-list li .check {
+      flex-shrink: 0;
+      width: 22px; height: 22px;
+      background: linear-gradient(135deg, var(--navy), var(--teal));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .proof-list li .check svg {
+      width: 12px; height: 12px;
+      stroke: white; stroke-width: 2.5;
+      fill: none; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* About panel */
+    .about-panel {
+      background: linear-gradient(150deg, var(--navy-deep) 0%, var(--navy) 60%, #1a3d4a 100%);
+      border-radius: 20px;
+      padding: 48px 40px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-panel::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(42,140,140,0.14);
+      pointer-events: none;
+    }
+    .about-panel::after {
+      content: '';
+      position: absolute;
+      bottom: -50px; left: -30px;
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      background: rgba(58,173,173,0.09);
+      pointer-events: none;
+    }
+
+    .panel-stat {
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 1;
+    }
+    .panel-stat-num {
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--teal-light);
+      line-height: 1;
+      margin-bottom: 5px;
+      letter-spacing: -0.02em;
+    }
+    .panel-stat-label {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.62);
+      font-weight: 500;
+    }
+    .panel-divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.10);
+      margin: 24px 0;
+    }
+    .panel-note {
+      position: relative;
+      z-index: 1;
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.70);
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    /* -- Contact Section ----------------------- */
+    #contact {
+      background: var(--beige);
+      padding: 88px 5%;
+    }
+
+    .contact-wrap {
+      max-width: 660px;
+      margin: 0 auto;
+    }
+
+    .contact-wrap .section-title,
+    .contact-wrap .section-eyebrow { text-align: center; }
+    .contact-wrap .section-sub { text-align: center; margin: 0 auto 12px; }
+
+    .contact-prompt {
+      background: var(--white);
+      border-left: 4px solid var(--teal);
+      border-radius: 0 10px 10px 0;
+      padding: 16px 22px;
+      margin: 28px 0 32px;
+      color: var(--charcoal);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .tally-wrap {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      min-height: 480px;
+    }
+
+    /* -- Footer -------------------------------- */
+    footer {
+      background: var(--navy-deep);
+      padding: 36px 5%;
+      text-align: center;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.85rem;
+      line-height: 1.8;
+    }
+    footer strong { color: rgba(255,255,255,0.78); }
+    footer .f-note {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.28);
+      margin-top: 6px;
+    }
+    footer .f-back {
+      display: inline-block;
+      margin-top: 14px;
+      color: var(--teal-light);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    footer .f-back:hover { text-decoration: underline; }
+
+    /* -- Responsive ---------------------------- */
+    @media (max-width: 600px) {
+      nav { padding: 0 4%; }
+      #hero, #value, #about, #contact { padding-left: 4%; padding-right: 4%; }
+      .about-panel { padding: 36px 28px; }
+    }
+  </style>
 </head>
-<body class="text-white min-h-screen">
+<body>
 
-    <!-- NAV -->
-    <header class="sticky top-0 z-50 bg-black/50 backdrop-blur-md border-b border-indigo-500/20 shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <a href="../" class="flex items-center space-x-3">
-                <img src="../logo.jpg" alt="Rift Digital LLC" class="h-16 w-auto">
-                <span class="text-lg font-bold tracking-wider text-purple-400">RIFT DIGITAL LLC</span>
-            </a>
-            <nav class="hidden md:flex space-x-8">
-                <a href="../#websites" class="text-gray-300 hover:text-indigo-400 transition text-sm font-medium">Websites & AI</a>
-                <a href="../#apps" class="text-gray-300 hover:text-indigo-400 transition text-sm font-medium">Apps</a>
-                <a href="../#products" class="text-gray-300 hover:text-indigo-400 transition text-sm font-medium">Digital Products</a>
-                <a href="../#properties" class="text-gray-300 hover:text-indigo-400 transition text-sm font-medium">Properties</a>
-                <a href="../#contact" class="text-gray-300 hover:text-indigo-400 transition text-sm font-medium">Contact</a>
-            </nav>
-            <a href="../" class="md:hidden text-indigo-400 text-sm font-medium">← Back</a>
+  <!-- ══ NAV ══════════════════════════════════ -->
+  <nav>
+    <a class="nav-brand" href="#hero" aria-label="Rift Properties home">
+
+      <!-- R + Roof logo mark (navy-to-teal gradient) -->
+      <svg class="logo-mark" viewBox="0 0 44 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="brandGrad" x1="22" y1="52" x2="22" y2="0" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stop-color="#1B2A4A"/>
+            <stop offset="100%" stop-color="#3AADAD"/>
+          </linearGradient>
+        </defs>
+        <!-- Roof: peak at (22,3), left foot (4,22), right foot (40,22) -->
+        <polyline
+          points="4,22 22,3 40,22"
+          stroke="url(#brandGrad)" stroke-width="3.8"
+          stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Left wall / left stroke of R -->
+        <line x1="10" y1="22" x2="10" y2="49"
+          stroke="url(#brandGrad)" stroke-width="3.8"
+          stroke-linecap="round"/>
+        <!-- R bowl: arc from top of left stroke, sweeps right, back to mid -->
+        <path d="M10,22 C10,22 34,22 34,33 C34,44 10,44 10,44"
+          stroke="url(#brandGrad)" stroke-width="3.8"
+          fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- R leg: diagonal from mid-bowl junction down-right -->
+        <line x1="22" y1="44" x2="36" y2="49"
+          stroke="url(#brandGrad)" stroke-width="3.8"
+          stroke-linecap="round"/>
+      </svg>
+
+      <div class="nav-wordmark">
+        <span class="w-rift">RIFT</span>
+        <span class="w-prop">Properties</span>
+      </div>
+    </a>
+
+    <a class="nav-back" href="https://riftdigital.ai/" aria-label="Back to Rift Digital">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="9,2 4,7 9,12"/>
+      </svg>
+      Rift Digital
+    </a>
+  </nav>
+
+  <!-- ══ HERO ══════════════════════════════════ -->
+  <section id="hero">
+    <div class="hero-eyebrow">Corporate Housing Partner</div>
+
+    <h1>
+      Hard-to-Lease Units?<br>
+      <span class="accent">We Want Them.</span>
+    </h1>
+
+    <p>
+      Your trusted partner in occupancy solutions &mdash; we fill the gaps
+      others overlook so you can maximize occupancy without extra hassle.
+    </p>
+
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Contact Us</a>
+      <a href="#value"   class="btn-ghost">How We Help</a>
+    </div>
+  </section>
+
+  <!-- ══ VALUE ══════════════════════════════════ -->
+  <section id="value" aria-labelledby="value-heading">
+    <div class="value-head">
+      <p class="section-eyebrow">Why Leasing Teams Choose Us</p>
+      <h2 class="section-title" id="value-heading">What Sets Rift Properties Apart</h2>
+      <p class="section-sub">
+        We work with apartment communities to deliver consistent,
+        professional tenancy &mdash; exactly when you need it most.
+      </p>
+    </div>
+
+    <div class="value-grid">
+
+      <div class="value-card">
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+            <polyline points="17 6 23 6 23 12"/>
+          </svg>
         </div>
-    </header>
+        <h3>We Support Occupancy</h3>
+        <p>We step in during slow lease-up periods, renewals, or anytime your community needs a reliable, low-maintenance occupant fast.</p>
+      </div>
 
-    <main>
+      <div class="value-card">
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3>We Vet Our Occupants</h3>
+        <p>Every occupant we place is carefully screened to ensure a respectful living environment for your community.</p>
+      </div>
 
-        <!-- HERO -->
-        <section class="hero-bg digital-pattern py-24 md:py-32 text-center border-b border-indigo-500/30">
-            <div class="max-w-3xl mx-auto px-4">
-                <p class="text-xs font-semibold tracking-widest text-indigo-400 uppercase mb-4">Rift Digital — Division 04</p>
-                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-5 leading-tight">
-                    Properties Built for<br><span class="text-gradient">Professionals.</span>
-                </h1>
-                <p class="text-lg text-gray-300 mb-8 max-w-xl mx-auto leading-relaxed">
-                    Rift Properties offers professionally managed short-term and corporate rentals — fully furnished, move-in ready, and designed for business travelers and extended stays.
-                </p>
-                <a href="#inquire" class="inline-block px-8 py-3 text-lg font-semibold rounded-full bg-indigo-600 hover:bg-indigo-700 transition shadow-xl shadow-indigo-500/40 transform hover:scale-105">
-                    Inquire About Availability
-                </a>
-            </div>
-        </section>
+      <div class="value-card">
+        <div class="card-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3>We're Easy to Work With</h3>
+        <p>We lease hard-to-lease units and take pressure off your leasing team &mdash; no complicated process, no added burden.</p>
+      </div>
 
-        <!-- WHO IT'S FOR -->
-        <section class="py-20 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-14">
-                <h2 class="text-3xl font-bold text-white mb-4">Built for Business Travelers</h2>
-                <p class="text-gray-400 max-w-xl mx-auto text-lg">More than a hotel room. Less than a long-term lease. Rift Properties occupies the space in between — built for people who need to be somewhere for a week, a month, or longer.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glow-card p-8 rounded-xl text-center">
-                    <span class="text-3xl block mb-4">💼</span>
-                    <h3 class="font-semibold text-white mb-2">Corporate Travelers</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Professionals on assignment, contract workers, and business travelers who need comfortable, reliable housing without a hotel price tag.</p>
-                </div>
-                <div class="glow-card p-8 rounded-xl text-center">
-                    <span class="text-3xl block mb-4">👥</span>
-                    <h3 class="font-semibold text-white mb-2">Project Teams</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Companies placing teams in a market for weeks or months — we accommodate groups that need space, comfort, and easy setup.</p>
-                </div>
-                <div class="glow-card p-8 rounded-xl text-center">
-                    <span class="text-3xl block mb-4">🌍</span>
-                    <h3 class="font-semibold text-white mb-2">Extended Stays</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Relocating, between leases, or exploring a new city? Flexible terms for guests who need somewhere quality to land and settle in.</p>
-                </div>
-            </div>
-        </section>
+    </div>
+  </section>
 
-        <!-- WHAT'S INCLUDED -->
-        <section class="py-16 bg-[#14022a] border-y border-indigo-500/30">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-3xl font-bold text-center mb-12 text-indigo-400">What's Always Included</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <div class="glow-card p-6 rounded-xl">
-                        <span class="text-2xl block mb-2">🛋️</span>
-                        <p class="text-sm font-medium text-gray-300">Fully Furnished</p>
-                    </div>
-                    <div class="glow-card p-6 rounded-xl">
-                        <span class="text-2xl block mb-2">📶</span>
-                        <p class="text-sm font-medium text-gray-300">High-Speed Wi-Fi</p>
-                    </div>
-                    <div class="glow-card p-6 rounded-xl">
-                        <span class="text-2xl block mb-2">🔦</span>
-                        <p class="text-sm font-medium text-gray-300">Utilities Included</p>
-                    </div>
-                    <div class="glow-card p-6 rounded-xl">
-                        <span class="text-2xl block mb-2">🧹</span>
-                        <p class="text-sm font-medium text-gray-300">Maintained & Clean</p>
-                    </div>
-                    <div class="glow-card p-6 rounded-xl">
-                        <span class="text-2xl block mb-2">📅</span>
-                        <p class="text-sm font-medium text-gray-300">Flexible Terms</p>
-                    </div>
-                    <div class="glow-card p-6 rounded-xl">
-                        <span class="text-2xl block mb-2">🔑</span>
-                        <p class="text-sm font-medium text-gray-300">Move-In Ready</p>
-                    </div>
-                    <div class="glow-card p-6 rounded-xl">
-                        <span class="text-2xl block mb-2">📞</span>
-                        <p class="text-sm font-medium text-gray-300">Responsive Management</p>
-                    </div>
-                    <div class="glow-card p-6 rounded-xl">
-                        <span class="text-2xl block mb-2">🅿️</span>
-                        <p class="text-sm font-medium text-gray-300">Parking Available</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+  <!-- ══ ABOUT ══════════════════════════════════ -->
+  <section id="about" aria-labelledby="about-heading">
+    <div class="about-wrap">
 
-        <!-- INQUIRE / CTA -->
-        <section id="inquire" class="py-20 md:py-24 max-w-3xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold text-indigo-400 mb-4">Check Availability</h2>
-            <p class="text-gray-300 mb-4 leading-relaxed">
-                Ready to book or want to discuss availability, pricing, and terms? Reach out directly — we respond fast and keep the process simple.
-            </p>
-            <p class="text-gray-400 text-sm mb-8">Include your desired location, dates, and the number of guests when you reach out.</p>
-            <a href="mailto:contact@riftdigital.ai?subject=Rift%20Properties%20Inquiry"
-               class="inline-block px-8 py-3 text-lg font-semibold rounded-full bg-indigo-600 hover:bg-indigo-700 transition shadow-xl shadow-indigo-500/40 transform hover:scale-105 mb-4">
-                Inquire About a Property
-            </a>
-            <p class="text-gray-500 text-sm">contact@riftdigital.ai · Responses within 24 hours.</p>
-        </section>
+      <div class="about-text">
+        <p class="section-eyebrow">About Us</p>
+        <h2 class="section-title" id="about-heading">Built for Leasing Offices</h2>
+        <p>
+          We specialize in partnering with apartment communities to stabilize
+          occupancy without adding operational headaches. Not every unit has
+          the perfect view or ideal floor plan &mdash; and that's okay.
+        </p>
+        <p>
+          We fill the gaps others overlook by delivering vetted residents
+          and hassle-free tenancy.
+        </p>
 
-    </main>
+        <ul class="proof-list">
+          <li>
+            <span class="check" aria-hidden="true">
+              <svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg>
+            </span>
+            Partner with apartment communities for reliable occupancy
+          </li>
+          <li>
+            <span class="check" aria-hidden="true">
+              <svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg>
+            </span>
+            Vetted residents with professional screening
+          </li>
+          <li>
+            <span class="check" aria-hidden="true">
+              <svg viewBox="0 0 12 12"><polyline points="2 6 5 9 10 3"/></svg>
+            </span>
+            Focused on reducing vacancy without operational burden
+          </li>
+        </ul>
+      </div>
 
-    <footer class="bg-black/70 py-8 border-t border-indigo-500/20 text-center">
-        <a href="../" class="text-indigo-400 hover:text-indigo-300 text-sm font-medium transition">← Back to Rift Digital</a>
-        <div class="mt-4 text-sm text-gray-600">&copy; <span id="year"></span> Rift Digital LLC. All rights reserved.</div>
-    </footer>
+      <div class="about-panel" aria-hidden="true">
+        <div class="panel-stat">
+          <div class="panel-stat-num">B2B</div>
+          <div class="panel-stat-label">Leasing Office Focus &mdash; not a consumer listing site</div>
+        </div>
+        <hr class="panel-divider">
+        <div class="panel-stat">
+          <div class="panel-stat-num">100%</div>
+          <div class="panel-stat-label">Screened &amp; vetted occupant placement</div>
+        </div>
+        <hr class="panel-divider">
+        <p class="panel-note">
+          "We help stabilize occupancy and support your leasing workflow."
+        </p>
+      </div>
 
-    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    </div>
+  </section>
+
+  <!-- ══ CONTACT ════════════════════════════════ -->
+  <section id="contact" aria-labelledby="contact-heading">
+    <div class="contact-wrap">
+      <p class="section-eyebrow">Get In Touch</p>
+      <h2 class="section-title" id="contact-heading">Contact Us</h2>
+
+      <div class="contact-prompt">
+        If your community allows corporate leasing or a furnished housing
+        provider model, reach out below. Tell us your property name and
+        whether you're currently managing vacancies &mdash; we'll follow up quickly.
+      </div>
+
+      <!-- Tally embed -->
+      <div class="tally-wrap">
+        <iframe
+          data-tally-src="https://tally.so/embed/GxDGJz?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
+          loading="lazy"
+          width="100%"
+          height="480"
+          frameborder="0"
+          marginheight="0"
+          marginwidth="0"
+          title="Contact Rift Properties"
+          style="display:block; border:none;"
+        ></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ════════════════════════════════ -->
+  <footer>
+    <strong>© 2026 Rift Properties</strong> &mdash; Professional furnished housing provider for apartment communities. All rights reserved.
+    <div class="f-note">We help stabilize occupancy and support your leasing workflow &mdash; not a consumer rental listing site.</div>
+    <a class="f-back" href="https://riftdigital.ai/">← Back to Rift Digital</a>
+  </footer>
+
+  <!-- Tally embed loader -->
+  <script>
+    var d=document,w="https://tally.so/widgets/embed.js",
+    v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach(function(e){e.src=e.dataset.tallySrc})};
+    if("undefined"!=typeof Tally)v();
+    else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w;s.onload=v;s.onerror=v;d.body.appendChild(s);}
+  </script>
+
 </body>
 </html>
