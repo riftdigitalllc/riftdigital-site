@@ -1,0 +1,492 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style><meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#0f6b66"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Bangkok trip"><link rel="manifest" href="/trip/bangkok/manifest.webmanifest"><link rel="apple-touch-icon" href="/favicon.png"><link rel="icon" href="/favicon.png"><title>Bangkok Trip Board</title></head><body><title>Thailand Trip Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kanit:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a ledger. Day labels down a narrow left rail, area blocks stacked beside them, three category columns inside each block. */
+:root{
+  --bg:#f3f1ea; --surface:#fffefa; --fg:#1c1f1e; --muted:#66706d; --line:#d9d9cf;
+  --accent:#0f6b66; --cat-a:#0f6b66; --cat-f:#c4651d; --cat-s:#8a4b7a; --star:#c89b1e;
+  --drop:#e3efed;
+  --display:"Kanit",Georgia,serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141a19; --surface:#1c2423; --fg:#e8ebe6; --muted:#93a09c; --line:#2e3a38;
+  --accent:#6fc6bf; --cat-a:#6fc6bf; --cat-f:#f0a05a; --cat-s:#c89ad0; --star:#e2c35a;
+  --drop:#1f3331; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141a19; --surface:#1c2423; --fg:#e8ebe6; --muted:#93a09c; --line:#2e3a38;
+  --accent:#6fc6bf; --cat-a:#6fc6bf; --cat-f:#f0a05a; --cat-s:#c89ad0; --star:#e2c35a;
+  --drop:#1f3331; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+a{color:inherit}
+.wrap{max-width:1100px;margin:0 auto}
+header{padding-block:28px 18px;border-bottom:2px solid var(--fg);display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,6vw,56px);line-height:1;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.sub{margin:10px 0 0;color:var(--muted);max-width:60ch}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--c)}
+button{font:inherit;color:inherit;background:none;border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--fg)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button[aria-pressed="true"]:not(.star){background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.status{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.status .pill{border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.status .pill.live{border-color:var(--accent);color:var(--accent)}
+.notice{margin:14px 0 0;padding:10px 14px;border-left:3px solid var(--accent);background:var(--surface);font-size:14px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.notice[hidden]{display:none}
+
+.day{display:grid;grid-template-columns:140px 1fr;gap:0 18px;border-bottom:1px solid var(--line);padding-block:18px}
+.day:last-of-type{border-bottom:0}
+.daylabel{font-family:var(--display);font-weight:700;font-size:20px;line-height:1.1;padding-top:14px;position:sticky;top:env(safe-area-inset-top,0px);align-self:start;white-space:nowrap}
+.daylabel small{display:block;font-family:var(--body);font-weight:400;font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:.04em;white-space:normal;max-width:130px}
+.blocks{display:flex;flex-direction:column;gap:14px;min-height:56px;min-width:0;border-radius:6px;transition:background .15s}
+.blocks.over{background:var(--drop)}
+.blocks:not(:has(.block))::after{content:"Drag an area here";color:var(--muted);font-size:13px;padding:16px 12px;border:1px dashed var(--line);border-radius:6px;display:block}
+.blocks.over:not(:has(.block))::after{border-color:var(--accent);color:var(--accent)}
+.placeholder{height:4px;border-radius:2px;background:var(--accent)}
+
+.block{background:var(--surface);border:1px solid var(--line);border-radius:8px;min-width:0}
+.block.dragging{opacity:.4}
+.block.fixed{border-color:var(--accent);border-style:dashed;background:transparent}
+.block.fixed .bhead{border-bottom:0;padding-bottom:4px}
+.block.fixed h2{color:var(--accent)}
+.fixedtag{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:1px 6px;flex-shrink:0;margin-top:4px}
+.lines{list-style:none;margin:0;padding:4px 14px 12px;display:flex;flex-direction:column;gap:6px}
+.lines li{display:grid;grid-template-columns:82px 1fr;gap:10px;align-items:baseline}
+.lines .t{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);white-space:nowrap}
+.lines a{font-weight:500;text-decoration:none;border-bottom:1px solid var(--line)}
+.lines .note{display:block;font-size:12.5px;color:var(--muted)}
+.home{margin:6px 0 0;font-size:13px}
+.home a{font-weight:500}
+.bhead{display:flex;align-items:flex-start;gap:10px;padding:12px 14px 10px;border-bottom:1px solid var(--line)}
+.handle{cursor:grab;color:var(--muted);padding:4px 2px;margin:-4px 0;display:flex;align-items:center;touch-action:none}
+.handle:active{cursor:grabbing}
+.bhead h2{font-family:var(--display);font-weight:700;font-size:20px;margin:0;line-height:1.15}
+.hint{margin:3px 0 0;font-size:13px;color:var(--muted)}
+.btitle{flex:1;min-width:0}
+.mv{display:flex;gap:4px;flex-shrink:0}
+.mv button{padding:4px 9px;line-height:1;border-radius:6px}
+.mv button:disabled{opacity:.3;cursor:default}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.col{padding:10px 14px 12px;min-width:0;border-right:1px solid var(--line)}
+.col:last-child{border-right:0}
+.col h3{margin:0 0 6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--c);display:flex;align-items:center;gap:6px;font-weight:600}
+.col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.col li{display:grid;grid-template-columns:22px 1fr;gap:6px;align-items:start}
+.col li.hide{display:none}
+.star{border:0;padding:0;width:22px;height:22px;display:grid;place-items:center;color:var(--line);border-radius:4px;margin-top:1px}
+.star:hover{color:var(--star)}
+.star[aria-pressed="true"]{color:var(--star)}
+.star svg{width:16px;height:16px;display:block}
+.place a{font-weight:500;text-decoration:none;border-bottom:1px solid var(--line)}
+.place a:hover{border-bottom-color:var(--fg)}
+.place .note{display:block;font-size:12.5px;color:var(--muted);margin-top:1px}
+.tag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cat-a);border:1px solid currentColor;border-radius:3px;padding:0 4px;margin-left:5px;vertical-align:1px}
+.when{font-size:10px;letter-spacing:.08em;text-transform:uppercase;border-radius:3px;padding:1px 5px;margin-right:6px;vertical-align:1px;font-weight:600;background:var(--line);color:var(--fg)}
+.when.am{background:var(--star);color:var(--bg)}
+.when.pm{background:var(--accent);color:var(--bg)}
+.when.eve{background:var(--fg);color:var(--bg)}
+.rule{margin:8px 0 0;font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 14px}
+.rule span{display:inline-flex;align-items:center}
+.col li.empty{display:block;font-size:12.5px;color:var(--muted);font-style:italic}
+
+details.prep{margin:16px 0 4px;border:1px solid var(--accent);border-radius:8px;padding:10px 14px 12px;background:var(--surface)}
+details.prep summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:18px;color:var(--accent)}
+.prepgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px 28px;margin-top:10px}
+.prepgrid h3{margin:0 0 6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.prepgrid ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.prepgrid li{display:grid;grid-template-columns:118px 1fr;gap:10px;align-items:baseline;font-size:13.5px;min-width:0}
+.prepgrid .w{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.prepgrid a{font-weight:500;text-decoration:none;border-bottom:1px solid var(--line)}
+.prepgrid .note{display:block;font-size:12.5px;color:var(--muted)}
+.prepgrid ul.plain li{display:block;padding-left:14px;text-indent:-14px}
+.prepgrid ul.plain li::before{content:"\2192  ";color:var(--accent)}
+@media (max-width:760px){.prepgrid{grid-template-columns:1fr}.prepgrid li{grid-template-columns:96px 1fr}}
+.trains{border-left:3px solid var(--accent);padding:8px 12px;background:var(--surface);border-radius:0 6px 6px 0;font-size:13px}
+.trains h4{margin:0 0 4px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.trains ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.trains li strong{font-weight:600}
+.trains .note{display:block;color:var(--muted);font-size:12.5px}
+.appsgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px 24px;margin-top:10px}
+.appsgrid h3{margin:0 0 6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.appsgrid ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.appsgrid li{font-size:13.5px;min-width:0}
+.appsgrid a{font-weight:500;text-decoration:none;border-bottom:1px solid var(--line)}
+.appsgrid .note{display:block;font-size:12.5px;color:var(--muted)}
+details.dropped{margin-top:22px;border-top:2px solid var(--fg);padding-top:12px}
+details.dropped summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:18px}
+details.dropped .hint{margin-bottom:8px}
+details.dropped ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+details.dropped li{display:flex;gap:8px;align-items:baseline}
+footer{margin-top:36px;font-size:12px;color:var(--muted)}
+
+@media (max-width:760px){
+  .cols{grid-template-columns:1fr}
+  .col{border-right:0;border-bottom:1px solid var(--line)}
+  .col:last-child{border-bottom:0}
+}
+@media (max-width:560px){
+  .day{grid-template-columns:1fr;gap:6px}
+  .daylabel{position:static;padding-top:0;font-size:19px}
+  .daylabel small{display:inline;margin-left:8px}
+  header{padding-block:20px 14px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <div>
+    <p class="eyebrow">Trip board</p>
+    <h1>Bangkok and Ayutthaya</h1>
+    <p class="sub">Nov 23 to Dec 2, 2026. Temples and anything outdoors in the morning, air conditioning in the afternoon, live music and street food after dark. Drag an area block to a different day. Star what we all agree on. Nov 28 is the wedding and stays empty.</p>
+    <p class="home" id="home"></p>
+    <p class="rule"><span><i class="when am">AM</i>outdoors, temples, before the heat</span><span><i class="when pm">PM</i>indoors or shaded</span><span><i class="when eve">EVE</i>after dark</span></p>
+  </div>
+  <div class="tools">
+    <div class="legend">
+      <span><i class="dot" style="--c:var(--cat-a)"></i>Attractions</span>
+      <span><i class="dot" style="--c:var(--cat-f)"></i>Food</span>
+      <span><i class="dot" style="--c:var(--cat-s)"></i>Shopping</span>
+      <span><i class="dot" style="--c:var(--star)"></i>Agreed</span>
+    </div>
+    <button id="filterStar" aria-pressed="false">Starred only</button>
+    <div class="status"><span class="pill" id="statusPill">Loading plan</span></div>
+  </div>
+</header>
+
+<div class="notice" id="notice" hidden><span id="noticeText"></span><button id="resetBtn" hidden>Use the shared plan</button></div>
+
+<details class="prep" id="apps"><summary>Apps, money and getting around</summary><div class="appsgrid" id="appsgrid"></div></details>
+
+<details class="prep" id="prep" open><summary>Book ahead and if plans change</summary><div class="prepgrid"><div><h3>Book ahead</h3><ul id="bookings"></ul></div><div><h3>If plans change</h3><ul class="plain" id="contingencies"></ul></div></div></details>
+
+<main id="board"></main>
+
+<details class="dropped" id="dropped"></details>
+<footer>Names link to a Google Maps search, so each one opens in the Maps app on a phone. Hours and closures change, check before you go.</footer>
+</div>
+
+<script id="tripdata" type="application/json">{"city": "thailand", "title": "Thailand Trip Board", "heading": "Bangkok and Ayutthaya", "sub": "Nov 23 to Dec 2, 2026. Temples and anything outdoors in the morning, air conditioning in the afternoon, live music and street food after dark. Drag an area block to a different day. Star what we all agree on. Nov 28 is the wedding and stays empty.", "home": {"n": "47/7 Lat Phrao Soi 15, Chatuchak, Bangkok 10900", "q": "47/7 Lat Phrao Soi 15 Chatuchak Bangkok 10900", "note": "Thai: ลาดพร้าว 15 47/7. Nearest stations: MRT Lat Phrao and MRT Phahon Yothin (Blue Line), BTS Ha Yaek Lat Phrao. Hosted by Blue, Nov 23 to Dec 2."}, "days": [{"id": "d23", "label": "Mon, Nov 23", "note": "Land 5:25 AM", "areas": ["fly-in", "homebase"], "trains": [{"n": "Suvarnabhumi to Lat Phrao, 45 to 60 min", "note": "Landing 5:25 AM with 7 people and bags: two Grabs or a pre-booked van, about 500 to 700 baht per car. Train option: Airport Rail Link to Makkasan, walk to MRT Phetchaburi, Blue Line to Lat Phrao, about 1h 10m."}]}, {"id": "d24", "label": "Tue, Nov 24", "areas": ["oldtown", "chinatown"], "trains": [{"n": "Lat Phrao to the Grand Palace, about 35 min", "note": "MRT Blue Line direct to Sanam Chai, no transfer. Exit 1, Wat Pho is 5 minutes, the Grand Palace 10. Tap a contactless Visa or Mastercard at the gate."}, {"n": "Across the river to Wat Arun", "note": "Walk to Tha Tien pier, the cross-river ferry is a few baht. Rongros and Eagle Nest are on the Old Town bank, so cross back before sunset, or watch from there."}, {"n": "Old Town to Chinatown, 10 min", "note": "MRT Sanam Chai 1 stop to Wat Mangkon (exit 1 is Yaowarat), or walk 25 minutes past Pak Khlong Talat flower market. Grab will crawl on Loy Krathong night, take the train."}, {"n": "Chinatown back to Lat Phrao, about 30 min", "note": "MRT Wat Mangkon direct to Lat Phrao. Last trains around midnight."}], "note": "Palace, ICONSIAM, Loy Krathong, Chinatown"}, {"id": "d25", "label": "Wed, Nov 25", "areas": ["silom", "drones"], "trains": [{"n": "Lat Phrao to Lumpini Park, about 25 min", "note": "MRT Blue Line direct to Si Lom (exit by the park corner). Tap a bank card."}, {"n": "Lumpini to Central Park, 5 min walk", "note": "The mall is at the Rama IV and Silom corner next to the park, connected to BTS Sala Daeng and MRT Silom."}, {"n": "Central Park to Mahanakhon, 1 BTS stop", "note": "BTS Silom Line from Sala Daeng to Chong Nonsi, the tower is attached to the station. BTS needs a Rabbit card or paper ticket. Or a 15-minute walk down Naradhiwat Road."}, {"n": "Mahanakhon to Tha Tien, about 25 min", "note": "BTS 1 stop back to Sala Daeng, then MRT Blue Line from Si Lom direct to Sanam Chai (6 stops, no change). Exit 1, 5 minutes to the riverside. Leave the tower by 6:45 to be on the bank by 7:15."}, {"n": "Tha Tien back to Lat Phrao, about 35 min", "note": "MRT Sanam Chai direct to Lat Phrao. Or Grab to Chinatown first (10 min) and MRT home from Wat Mangkon. Last trains around midnight."}], "note": "Park, food court, tower, drones over Wat Arun"}, {"id": "d26", "label": "Thu, Nov 26", "areas": ["daytrips"], "trains": [{"n": "Lat Phrao to Maeklong, 6:30 to 8:15 AM by van", "note": "About 90 km on Route 35. Private 10-seat van booked through the host or Grab Van, roughly 3,500 to 4,500 baht for the day round trip. The 8:30 train is the target; leave at 6:30 to be safe."}, {"n": "Maeklong to Damnoen Saduak, 30 min", "note": "Same van. Boats are hired at the piers before the main market, not inside it."}, {"n": "Damnoen Saduak to Bubble in the Forest, 45 min", "note": "Toward Bangkok via Route 4, Nakhon Pathom. Lunch 12:30."}, {"n": "Bubble in the Forest to Lat Phrao, about 1h 30", "note": "Afternoon traffic back into the city. Home by 3:30, nothing else planned."}], "note": "West: train market, floating market boats, lunch on the water"}, {"id": "d27", "label": "Fri, Nov 27", "areas": ["restday"], "trains": [], "note": "Rest"}, {"id": "d28", "label": "Sat, Nov 28", "note": "Wedding", "areas": ["wedding"], "trains": [{"n": "Lat Phrao to Santa Cruz Church", "note": "Dressed up, so Grab or a van, 45 to 60 min, leave by 1:30 PM. Train backup: MRT Blue Line direct to Itsaraphap, then a 15-minute walk through Kudi Chin to the church."}]}, {"id": "d29", "label": "Sun, Nov 29", "areas": ["markets"], "trains": [{"n": "Chatuchak Weekend Market", "note": "Walk 10 to 15 minutes from the stay, or MRT 1 stop to Kamphaeng Phet (exit 2 opens inside the market)."}, {"n": "Bangsue Junction", "note": "MRT 2 stops to Bang Sue or Tao Poon, short walk or Grab."}]}, {"id": "d30", "label": "Mon, Nov 30", "areas": ["kohsamet"], "trains": [{"n": "Koh Samet: Lat Phrao to Ban Phe pier, about 3h", "note": "Public minivans leave from Ekkamai Eastern Bus Terminal (BTS Ekkamai) and split the group across vans. A private van for 7 door to door is simpler, book on 12Go. Ferry or speedboat tickets at the pier."}]}, {"id": "d01", "label": "Tue, Dec 1", "areas": ["kohsamet-return", "sukhumvit", "victory"], "trains": [{"n": "Ban Phe back to Sukhumvit, about 3h", "note": "Van back to Ekkamai. Wattana Panich is 15 minutes on foot from BTS Ekkamai, Terminal 21 is 3 BTS stops at Asok."}, {"n": "Sukhumvit back to Lat Phrao, 25 min", "note": "BTS Asok connects to MRT Sukhumvit underground, Blue Line direct to Lat Phrao."}, {"n": "Sukhumvit to Saxophone, 15 min", "note": "BTS from Asok 4 stops to Victory Monument, exit 4. Home after: BTS Victory Monument 5 stops to Ha Yaek Lat Phrao, 12 minutes, last train around midnight. After the midnight set it is a 15-minute Grab."}], "note": "Back from Samet, Sukhumvit, Saxophone"}, {"id": "d02", "label": "Wed, Dec 2", "note": "Checkout 11 AM, fly 4:55 PM", "areas": ["fly-out"], "trains": [{"n": "Lat Phrao to Suvarnabhumi, leave by 1:30 PM", "note": "Grab or van with the bags, 45 to 75 min depending on traffic. Train backup: MRT to Phetchaburi, walk to Makkasan, Airport Rail Link to the airport, about 1h 10m."}]}, {"id": "pool", "label": "Not placed yet", "areas": ["siam", "thonburi", "bangkrachao", "ari"]}], "areas": {"fly-in": {"name": "Arrive from Tokyo", "fixed": true, "hint": "Early landing, late check-in. Plan a slow morning.", "lines": [{"t": "5:25 AM", "n": "TG 661 lands at Suvarnabhumi", "q": "Suvarnabhumi Airport", "note": "7 passengers. Immigration and bags, then a Grab or two taxis to Lat Phrao, about 45 minutes."}, {"t": "After 3 PM", "n": "Check in: Townhouse in Chatuchak", "q": "Lat Phrao Soi 15 Chatuchak Bangkok 10900", "note": "Ask the host whether bags can be dropped early. If not, the malls below have AC and lockers."}]}, "wedding": {"name": "A and J wedding, Santa Cruz Church", "fixed": true, "hint": "Whole day reserved. Dress up. Church is in Kudi Chin on the Thonburi bank, 300 m downriver of Memorial Bridge and next door to Wat Kalayanamit. No other plans today, and no other dinner cruises on any night of the trip. Vijit Chao Phraya fires its Saturday fireworks off Memorial Bridge at 8:45 PM, which is 45 minutes after the boat docks, so the wedding ends with fireworks from the church bank.", "lines": [{"t": "By 2:30 PM", "n": "Arrive at Santa Cruz Church", "q": "Santa Cruz Church Kudi Chin Bangkok", "note": "From Lat Phrao allow 45 to 60 minutes by Grab. Landmarks on the invite map: Wat Prayurawongsawat, Suksanaree School, Wongwian Yai roundabout, Arun Amarin Road."}, {"t": "3:00 PM", "n": "Mass", "note": "Santa Cruz Church (โบสถ์ซางตาครู้ส)."}, {"t": "5:30 PM", "n": "Dinner on the Grand Chaophraya Cruise", "q": "Santa Cruz Church Pier Bangkok", "note": "Board at the pier in front of the church."}, {"t": "8:00 PM", "n": "Boat returns to the church pier", "note": "Do not leave yet. Walk 2 minutes to the Wat Kalayanamit riverfront: the Thai cultural light show there runs 8:20 PM, and Memorial Bridge is right upriver."}, {"t": "8:45 PM", "n": "Memorial Bridge fireworks from the church bank", "note": "Vijit Chao Phraya Saturday fireworks, 8:45 PM, fired at Memorial Bridge, best seen from the Kudi Chin and Wat Kalayanamit bank where you already are. Ask the cruise company whether the Nov 28 sailing holds the boat near the bridge until 8:45 instead of docking at 8; some operators do on fireworks nights. Grab home after 9:15 when the bridge crowd thins."}]}, "fly-out": {"name": "Fly home", "fixed": true, "hint": "Checkout before 11 AM. Leave for the airport by 1:30 PM. Nothing heavy in the morning.", "lines": [{"t": "4:55 PM", "n": "BKK to HKG, UA 821", "q": "Suvarnabhumi Airport", "note": "2h 50m. Lands 8:45 PM. 1h 45m connection."}, {"t": "10:30 PM", "n": "HKG to SFO, UA 878", "q": "Hong Kong International Airport", "note": "12h 25m on a 777-300ER. Lands SFO 6:55 PM the same calendar day."}, {"t": "8:45 PM", "n": "SFO to FAT, UA 5271", "q": "Fresno Yosemite International Airport", "note": "SkyWest CRJ200. Lands Fresno 9:56 PM Wed Dec 2."}]}, "homebase": {"name": "Around the stay (Lat Phrao)", "hint": "Host recommendations. Easy first afternoon while waiting for check-in.", "places": [{"id": "centralladprao", "c": "s", "n": "Central Ladprao", "q": "Central Ladprao Bangkok", "note": "Shopping mall next to the stay. Food court for the first meal.", "w": "pm"}, {"id": "unionmall", "c": "s", "n": "Union Mall", "q": "Union Mall Bangkok", "note": "Cheap clothes and phone accessories.", "w": "pm"}, {"id": "carnivalladprao", "c": "s", "w": "pm", "n": "Carnival, Central Ladprao", "q": "Carnival Central Ladprao Bangkok", "note": "Branch of the sneaker store in the mall next to the stay. Check here first for Thailand-exclusive pairs, then Siam Square if they do not have it."}]}, "oldtown": {"name": "Old Town (Rattanakosin)", "hint": "Grand Palace at 8:30 when it opens, Wat Pho next door, done by noon. ICONSIAM across the river for the hot hours and the Sook Siam food hall. Ferry back for the Wat Arun sunset and a krathong on the river (Loy Krathong is this night), then Chinatown for dinner, one MRT stop away. The Rongros table moves to Wednesday, the drone-show night.", "places": [{"id": "grandpalace", "c": "a", "tag": "temple", "n": "Grand Palace", "q": "Grand Palace Bangkok", "note": "Dress code: covered shoulders and knees.", "w": "am"}, {"id": "watpho", "c": "a", "tag": "temple", "n": "Wat Pho", "q": "Wat Pho Bangkok", "note": "Reclining Buddha. Next to the Grand Palace.", "w": "am"}, {"id": "watarun", "c": "a", "tag": "temple", "n": "Wat Arun", "q": "Wat Arun Bangkok", "note": "Across the river. Best seen at sunset from the Old Town bank.", "w": "eve"}, {"id": "loykrathong", "c": "a", "w": "eve", "n": "Loy Krathong on the river", "q": "Wat Arun Bangkok", "note": "Tuesday Nov 24 (TAT lists it as a no-show night, so no fireworks or drones, just the lit temples and the krathongs). Buy a krathong on the Old Town bank, float it from Tha Tien or the Wat Pho side at dusk, then walk or one MRT stop to Chinatown for dinner. Expect crowds and a slow Grab home."}, {"id": "vijit", "c": "a", "w": "eve", "n": "Vijit Chao Phraya light festival (schedule out)", "q": "Chao Phraya River Bangkok", "note": "Nov 13 to Dec 13, lights 6 to 10 PM nightly, free from both banks. Shows: Wat Arun drone show 7:50 PM on Wednesdays and Fridays (Nov 18, 20, 25, 27, Dec 2, 4, 9, 11). Memorial Bridge fireworks 8:45 PM Saturdays and Sundays (Nov 21, 22, 28, 29, Dec 5, 6, 12, 13). Krung Thep Bridge fireworks plus drones and the Rama VIII waterfall fireworks, Fridays 8:45 PM (Nov 20, 27, Dec 4, 11). Nothing on Mon, Tue or Thu. For you: fireworks on the wedding night from the church bank, drones for the kids on Wed 25."}, {"id": "watsaket", "c": "a", "tag": "temple", "n": "Wat Saket (Golden Mount)", "q": "Wat Saket Golden Mount Bangkok", "note": "Climb for the city view.", "w": "am"}, {"id": "ferry", "c": "a", "n": "Chao Phraya public ferry", "q": "Tha Tien Pier Bangkok", "note": "Orange-flag boat, a few baht. The dinner cruise on the 28th covers the river at night, so no other cruise.", "w": "any"}, {"id": "rajadamnern", "c": "a", "n": "Rajadamnern Stadium", "q": "Rajadamnern Stadium Bangkok", "note": "Live Muay Thai. Check fight nights.", "w": "eve"}, {"id": "likhit", "c": "f", "n": "Likhit Kai Yang", "q": "Likhit Kai Yang Bangkok", "note": "Grilled chicken, next to the stadium.", "w": "pm"}, {"id": "khaosan", "c": "s", "n": "Khao San Road", "q": "Khao San Road Bangkok", "note": "Both guides say skip it. Listed so you can see where it is.", "w": "any"}, {"id": "iconsiam", "c": "f", "w": "pm", "n": "ICONSIAM: Sook Siam food hall, then walk the mall", "q": "ICONSIAM Bangkok", "note": "Tuesday's air-conditioned afternoon. Eat first: Sook Siam on the ground floor is an indoor floating market with stalls from all 77 provinces, food court round one before Central Park on Wednesday. Then walk the mall: Apple store, the big Siam Takashimaya floors, river terrace on 2 for the view back to the Old Town. Budget 2 to 3 hours. Free shuttle boat from Sathorn pier or the short ferry hop from Tha Tien. 10 AM to 10 PM."}]}, "chinatown": {"name": "Chinatown and Song Wat", "hint": "Tuesday night after the krathongs, one MRT stop or a 25-minute walk through the flower market from Tha Tien. Street food on Yaowarat from 7:30, Soi Nana cocktails last. Song Wat and Talat Noi are daytime streets; they are here in case you wander over early.", "places": [{"id": "songwat", "c": "a", "n": "Song Wat Road", "q": "Song Wat Road Bangkok", "note": "Century-old riverfront street. Coffee, art spaces, shophouses.", "w": "eve"}, {"id": "chinatownfood", "c": "a", "n": "Chinatown street food alleys", "q": "Yaowarat Road Bangkok Chinatown", "note": "Yaowarat Road after dark.", "w": "eve"}, {"id": "soinana", "c": "a", "n": "Soi Nana (Chinatown)", "q": "Soi Nana Chinatown Bangkok", "note": "Vintage shophouse cocktail bars. Not the Sukhumvit Nana.", "w": "eve"}, {"id": "tepbar", "c": "f", "n": "TEP BAR", "q": "TEP BAR Bangkok", "note": "Gin cocktails, live Thai instruments.", "w": "eve"}, {"id": "rongklannuea", "c": "f", "n": "Rongklannuea", "q": "Rongklannuea beef noodle Song Wat Bangkok", "note": "Beef noodle shop on Song Wat.", "w": "eve"}, {"id": "talatnoi", "c": "a", "w": "eve", "n": "Talat Noi", "q": "Talat Noi Bangkok", "note": "Walk here from Song Wat for the street art and old shophouses."}]}, "siam": {"name": "Siam", "hint": "Dropped from Wednesday because Central Park covers the mall-and-food-court afternoon. Keep for a rain day or if someone wants MBK or Siam Paragon specifically. Atmos Bangkok is in CentralWorld next door.", "places": [{"id": "siamsquare", "c": "a", "n": "Siam Square", "q": "Siam Square Bangkok", "note": "", "w": "pm"}, {"id": "saensaep", "c": "a", "n": "Saen Saep canal boat", "q": "Saen Saep Express Boat Pratunam Pier", "note": "Under 20 baht, Siam to Old Town in about 12 minutes.", "w": "pm"}, {"id": "paragonfood", "c": "f", "n": "Siam Paragon food court", "q": "Siam Paragon Food Hall", "note": "Basement. Street food flavors under AC, meals under 3 dollars.", "w": "pm"}, {"id": "mbk", "c": "s", "n": "MBK Center", "q": "MBK Center Bangkok", "note": "Electronics, phone cases, cheap everything.", "w": "pm"}, {"id": "atmosbkk", "c": "s", "w": "pm", "n": "Atmos Bangkok, CentralWorld 2F", "q": "Atmos Bangkok CentralWorld", "note": "The Tokyo sneaker store's Bangkok branch. Exclusives from Nike, adidas, ASICS."}, {"id": "carnivalsiam", "c": "s", "w": "pm", "n": "Carnival flagship, Siam Square Soi 7", "q": "Carnival Siam Square Soi 7 Bangkok", "note": "Bangkok's main sneaker destination, hyped Nike and adidas drops and Thailand-only collabs. Next to Hard Rock Cafe, 11 AM to 9 PM."}, {"id": "samosorn", "c": "f", "w": "eve", "n": "Ice Cream Samosorn", "q": "Ice Cream Samosorn Soi Chulalongkorn 1", "note": "Homemade ice cream near Chulalongkorn University, walking distance from MBK. Banana creme brulee sundae (245 baht) is the order, deep-fried ice cream 95 baht. Opens 4 PM, till midnight (1 AM Fri to Sun). Portions share. Pairs with an MBK or Siam rain afternoon, or a Sunday night after Chatuchak."}]}, "sukhumvit": {"name": "Sukhumvit and Ekkamai", "hint": "Back from Koh Samet by late afternoon. Terminal 21 food court, Wattana Panich, then the BTS to Saxophone for the 9 PM set. Rooftop drinks are covered by Mahanakhon on Wednesday, so Akara is optional.", "places": [{"id": "neon", "c": "a", "n": "Neon city views", "q": "rooftop bar Sukhumvit Bangkok", "note": "From the 5-day guide. No specific spot named.", "w": "eve"}, {"id": "pier21", "c": "f", "n": "Pier 21 at Terminal 21", "q": "Pier 21 Food Terminal Terminal 21 Asok", "note": "Mall food court, cheap and clean.", "w": "pm"}, {"id": "wattana", "c": "f", "n": "Wattana Panich", "q": "Wattana Panich Ekkamai", "note": "Beef soup simmering for 50 years. Ekkamai Soi 18.", "w": "pm"}, {"id": "krapow", "c": "f", "n": "Midnight pad krapow", "q": "Phetchaburi Soi 5 pad krapow Bangkok", "note": "Phetchaburi Soi 5 or Phor Kitchen. Go late.", "w": "eve"}, {"id": "phor", "c": "f", "n": "Phor Kitchen", "q": "Phor Kitchen Bangkok", "note": "Pad krapow.", "w": "eve"}, {"id": "akara", "c": "f", "n": "Akara Sky Hanuman", "q": "Akara Sky Hanuman Bangkok", "note": "61st floor rooftop bar and restaurant.", "w": "eve"}, {"id": "terminal21", "c": "s", "n": "Terminal 21", "q": "Terminal 21 Asok Bangkok", "note": "Mall, each floor is a different city.", "w": "pm"}]}, "thonburi": {"name": "Thonburi canals and Wat Paknam", "hint": "Bumped to the pool by the west day trip, which also has boats. Fits Friday 27 morning only if everyone is fresh (the 28th is the priority), or replaces the west trip if a 6:30 start is too much. Wat Paknam alone is an easy MRT morning any day.", "places": [{"id": "sooksamraan", "c": "a", "n": "Sook Samraan canal boat tour", "q": "Sook Samraan solar boat tour Bangkok", "note": "Solar boat through the canals to Wat Arun and Wat Paknam.", "w": "am"}, {"id": "watpaknam", "c": "a", "tag": "temple", "n": "Wat Paknam Phasi Charoen", "q": "Wat Paknam Phasi Charoen", "note": "Giant golden seated Buddha.", "w": "am"}, {"id": "artisthouse", "c": "a", "n": "Khlong Bang Luang Artist House", "q": "Baan Silapin Artist House Bangkok", "note": "Canal-side art house. Handmade bracelets, puppet shows.", "w": "am"}]}, "ari": {"name": "Ari", "hint": "Cafe neighborhood. Easy evening.", "places": [{"id": "arihood", "c": "a", "n": "Ari neighborhood", "q": "Ari Bangkok", "note": "BTS Ari. Cafes and small restaurants.", "w": "am"}, {"id": "aricafes", "c": "f", "n": "Local cafes in Ari", "q": "cafe Ari Bangkok", "note": "No specific cafe named yet.", "w": "am"}]}, "silom": {"name": "Lumpini, Central Park and Mahanakhon", "hint": "All three of your asks in one line: the park at 7 AM, the new Central Park mall for the Michelin food court and rooftop park through the heat, then the Mahanakhon sunset ticket and its 78th-floor rooftop bar. Everything is within two stations.", "places": [{"id": "lumpini", "c": "a", "w": "am", "n": "Lumpini Park", "q": "Lumpini Park Bangkok", "note": "7 AM walk, monitor lizards, tai chi groups. MRT Si Lom or Lumphini."}, {"id": "centralpark", "c": "s", "w": "pm", "n": "Central Park Bangkok (mall)", "q": "Central Park Bangkok Rama IV Silom", "note": "Opened Sept 2025 at 946 Rama IV, connected to BTS Sala Daeng and a 5-minute walk from MRT Silom. 10 AM to 10 PM. Eight floors, the viral escalators, POP MART."}, {"id": "parksidemarket", "c": "f", "w": "pm", "n": "Parkside Market food court (LG floor)", "q": "Parkside Market Central Park Bangkok", "note": "Food court round two, the day after Sook Siam at ICONSIAM. Thailand's largest cluster of Michelin Guide stalls, 17 awarded eateries plus 70 street-food vendors, 1,000 dishes, under AC, no queues. This is the lunch. Decide which food court wins."}, {"id": "dusitarun", "c": "a", "w": "pm", "n": "Dusit Arun rooftop park and viewing deck", "q": "Dusit Arun Park Central Park Bangkok rooftop", "note": "Thailand's largest rooftop garden, 11,200 sqm across floors 4 to 7, with the Bird Nest viewing zone over Lumpini. Free, 6 AM to 10 PM, own elevator. The Glasshouse rooftop dining is on floor 6."}, {"id": "khaosoi", "c": "f", "w": "pm", "n": "Kria Aroy Aroy", "q": "Aroy Aroy khao soi Silom Bangkok", "note": "Khao soi on Silom. Backup if the food court is mobbed. Name from your notes, confirm spelling."}, {"id": "mahanakhon", "c": "a", "w": "eve", "n": "King Power Mahanakhon SkyWalk", "q": "King Power Mahanakhon SkyWalk", "note": "The pixelated tower. 74th-floor indoor deck, 78th-floor open roof with the glass tray (no phones on the glass, shoe covers). Sunset ticket window 4 to 7 PM, last entry 6:30; on-site 1,200 baht, cheaper on Klook. Sunset about 5:45. Directly on BTS Chong Nonsi, one stop from Sala Daeng."}, {"id": "skybeach", "c": "f", "w": "eve", "n": "Sky Beach rooftop bar, Mahanakhon 78F", "q": "Sky Beach Bar King Power Mahanakhon", "note": "Thailand's highest rooftop bar, on the same ticket plus a drink add-on, or pay at the door after 6:30. Covers the rooftop-bar wish without a dress-code bar. Arrive early for a spot at sunset."}]}, "markets": {"name": "Markets", "hint": "Sunday after the wedding. Chatuchak early before the heat (it is mostly outdoors), Bangsue Red Building under AC in the afternoon.", "places": [{"id": "chatuchak", "c": "s", "n": "Chatuchak Weekend Market", "q": "Chatuchak Weekend Market", "note": "Saturday and Sunday only. Next to the stay.", "w": "am"}, {"id": "bangsue", "c": "s", "n": "Bangsue Junction (Red Building)", "q": "Bangsue Junction Bangkok", "note": "Film cameras, vintage clothes, vinyl.", "w": "pm"}, {"id": "nightmarket", "c": "s", "n": "Night market", "q": "Jodd Fairs night market Bangkok", "note": "The 5-day guide does not name one. Jodd Fairs is the usual pick.", "w": "eve"}]}, "daytrips": {"name": "Day trip west: train market and floating market boats", "hint": "Your friend's day, back on. Private van for 7 from Lat Phrao at 6:30 AM (Grab a 10-seater or ask the host; a shared tour will not start from Lat Phrao). Maeklong for the 8:30 train through the market, Damnoen Saduak by 9:45 for an hour on long-tail boats before the heat, lunch on the water at Bubble in the Forest, home under AC by 3. The Erawan Museum is the opposite direction and does not belong on this day; it is here only as a swap.", "places": [{"id": "maeklong", "c": "a", "n": "Maeklong Railway Market", "q": "Maeklong Railway Market", "note": "Vendors fold their awnings as the train rolls through at walking pace. Trains arrive about 8:30 and 11:10 AM; aim for 8:30 so the floating market is still cool. Stand well back from the rails, the train clears the stalls by inches. Umbrella market starts right at the platform.", "w": "am", "star": true}, {"id": "damnoen", "c": "a", "n": "Damnoen Saduak Floating Market and long-tail boats", "q": "Damnoen Saduak Floating Market", "note": "The one your friend did. Hire a long-tail (about 1 hour, roughly 1,500 to 2,000 baht per boat, agree the price first, 7 people need two boats) from the piers before the main market, then walk the canal-side stalls. Coconut pancakes, boat noodles, mango sticky rice from the paddle boats. Busiest 9 to 11, winding down after noon.", "w": "am", "star": true}, {"id": "erawan", "c": "a", "n": "Erawan Museum", "q": "Erawan Museum Samut Prakan", "note": "Giant three-headed elephant, BTS Chang Erawan, east of the city, so not on this day's route. Swap in on a rainy afternoon if it appeals.", "w": "pm"}, {"id": "bubbleforest", "c": "f", "w": "pm", "n": "Bubble in the Forest Cafe", "q": "Bubble in the Forest Cafe Nakhon Pathom", "note": "Floating cabanas over the water, food brought by kayak. Nakhon Pathom, about 45 minutes back toward Bangkok from Damnoen Saduak. Book a set menu for 7 on Hungry Hub for 12:30, it fills up. Shade, fans, a long lazy lunch while the heat peaks."}, {"id": "coconutfarm", "c": "a", "w": "am", "n": "Coconut sugar farm stop", "q": "coconut sugar farm Damnoen Saduak", "note": "Most vans stop at a roadside coconut-sugar farm between the two markets: 15 minutes, free samples, a 20-baht iced coconut. Fine as a leg-stretch, skip the gift shop hard sell."}, {"id": "watbangkung", "c": "a", "w": "am", "n": "Wat Bang Kung (tree-covered temple)", "q": "Wat Bang Kung Samut Songkhram", "note": "Small temple chapel swallowed by a banyan tree, 15 minutes from Maeklong. Morning temple for the day if you want one; 20 minutes is plenty."}]}, "kohsamet": {"name": "Koh Samet", "hint": "Island in Rayong, about 3 hours to Ban Phe pier then a 30 to 40 minute boat. Overnight: leave Mon 6 AM, on the sand by 11, back in Bangkok Tue by 5 PM. Monday afternoon splits the group: Jason and Arliz go diving, the kids take a snorkel boat or kayaks, everyone meets at Sai Kaew for sunset seafood.", "places": [{"id": "banphe", "c": "a", "w": "am", "n": "Ban Phe pier (Nuanthip Pier)", "q": "Nuanthip Pier Ban Phe Rayong", "note": "Minivan from Ekkamai bus terminal about 3 hours, or a private van for 7 door to door. Ferry or speedboat from here."}, {"id": "sametpark", "c": "a", "w": "am", "n": "Koh Samet National Park gate", "q": "Khao Laem Ya Mu Ko Samet National Park", "note": "Park entry fee for foreigners at the gate, cash. Amount changes, budget about 200 baht per person."}, {"id": "saikaew", "c": "a", "w": "am", "n": "Sai Kaew Beach", "q": "Sai Kaew Beach Koh Samet", "note": "Main beach, closest to the pier, liveliest. Morning swim before the heat."}, {"id": "aoprao", "c": "a", "w": "pm", "n": "Ao Prao", "q": "Ao Prao Beach Koh Samet", "note": "Quiet west-coast bay, sunset side. Resort restaurants with shade for the afternoon."}, {"id": "wongduean", "c": "a", "w": "pm", "n": "Ao Wong Duean", "q": "Ao Wong Duean Koh Samet", "note": "Crescent bay halfway down the east coast. Calmer than Sai Kaew."}, {"id": "sametseafood", "c": "f", "w": "eve", "n": "Beach seafood on Sai Kaew", "q": "seafood restaurant Sai Kaew Beach Koh Samet", "note": "Tables on the sand at night, fire shows. No specific spot from your notes yet."}, {"id": "dive", "c": "a", "w": "pm", "star": true, "tag": "Jason + Arliz", "n": "Afternoon dive trip, Koh Samet", "q": "dive center Koh Samet", "note": "Easy reef diving, 8 to 15 m, visibility 5 to 10 m, sites like Hin Plueng, Koh Talu and the Petra wreck. Nov to Dec is the season. Two names come up: Ploy Scuba Diving on Sai Kaew and Ao Prao Divers at Ao Prao Resort; neither is verified for 2026, so message both this week. Certified: a 2-tank afternoon trip, about 3,000 to 4,000 baht each. Not certified: Discover Scuba, half a day, one shallow dive, similar price. Diving Monday keeps Tuesday free and leaves 48 hours before the Wednesday flight."}, {"id": "kidsboat", "c": "a", "w": "pm", "tag": "Kids", "n": "Snorkel boat to Koh Kudi and Koh Thalu", "q": "Koh Kudi Koh Samet snorkeling", "note": "The kids' afternoon while you dive. Half-day long-tail or speedboat snorkel trip to the small islands off the east coast, booked from any beachfront shop on Sai Kaew the morning you arrive, about 500 to 800 baht each. Or kayaks and paddleboards rented on Ao Phai. Everyone back by 5."}, {"id": "laemtoei", "c": "a", "w": "eve", "n": "Laem Toei viewpoint (sunset)", "q": "Laem Toei viewpoint Koh Samet", "note": "Southern tip, 15 minutes by songthaew from Sai Kaew. Sunset from the rocks if the dive boat is back in time; otherwise Ao Prao is the sunset beach."}]}, "kohsamet-return": {"name": "Koh Samet, morning, then back to Bangkok", "hint": "Last swim early, boat by 11, van back, in Bangkok by 4 PM. Sukhumvit evening and Saxophone still work. If the dive had to move to Tuesday morning, take the 1 PM boat and go straight to Saxophone from Ekkamai instead.", "places": [{"id": "sametmorning", "c": "a", "w": "am", "n": "Morning swim, then the boat back", "q": "Nuanthip Pier Ban Phe Rayong", "note": "Check boat times at the pier the day before."}]}, "bangkrachao": {"name": "Bang Krachao (Green Lung)", "hint": "Half morning. Ferry from Khlong Toei pier, rent a bike. Fits any free morning.", "places": [{"id": "bangkrachao", "c": "a", "n": "Bang Krachao", "q": "Bang Krachao Bangkok", "note": "Green Lung island. Go at 7 or 8 AM before the heat, rent a bike, done by 11. Ferry from Khlong Toei Pier on the Sukhumvit side.", "w": "am"}]}, "victory": {"name": "Victory Monument: Saxophone Pub", "hint": "Your Tuesday. Bangkok's longest-running live music room, open since 1987. Jazz, blues, funk and reggae, three acts a night at about 7:30, 9:00 and midnight, free entry, smart casual. Five BTS stops from the stay.", "places": [{"id": "saxophone", "c": "f", "w": "eve", "n": "Saxophone Pub and Restaurant", "q": "Saxophone Pub Victory Monument Bangkok", "note": "3/8 Phayathai Road, BTS Victory Monument exit 4, a few minutes' walk. Open daily 6 PM to 2 AM. Reserve a table for 7 for the 9 PM set; the week's band schedule is on their Facebook page."}]}, "restday": {"name": "Rest day before the wedding", "fixed": true, "hint": "Deliberately empty. Sleep in, steam the outfits, sort transport for Saturday, early night. Drag something small in only if everyone is fresh.", "lines": [{"t": "Morning", "n": "Nothing planned", "note": "Chatuchak is closed on Fridays, so there is no temptation next door."}, {"t": "Afternoon", "n": "Wedding prep", "note": "Confirm the two Grabs or van for Saturday 1:30 PM. Press or steam suits and dresses. Cash for Saturday."}, {"t": "Evening", "n": "Dinner near the stay", "note": "Central Ladprao food court or Union Mall. Home early."}]}, "drones": {"name": "Wat Arun drone show from the Old Town bank (kids)", "hint": "Wednesday evening after the Mahanakhon sunset: MRT Blue Line from Si Lom straight to Sanam Chai, 6 stops, no change. Drones fly over Wat Arun at 7:50 PM; be on the bank by 7:15. The free view is Tha Tien pier and the riverside walk by Wat Pho. The \"exclusive\" view is a booked table on one of the terraces that face the temple: Rongros, Eagle Nest or Sala Rattanakosin. Book now, show nights fill. Chinatown late if there is energy, it is 10 minutes away.", "places": [{"id": "droneshow", "c": "a", "w": "eve", "star": true, "tag": "Kids", "n": "Wat Arun drone light show, 7:50 PM", "q": "Tha Tien Pier Bangkok", "note": "Vijit Chao Phraya drone formation over the Temple of Dawn, one show, 7:50 PM, Wed Nov 25 (also Fri 27 if Wednesday falls through). Watched from the Old Town bank directly opposite, so the temple is the backdrop. Free from the pier; from a terrace with a drink in hand if you book."}, {"id": "thatien", "c": "a", "w": "eve", "n": "Tha Tien pier and the Wat Pho riverside", "q": "Tha Tien Pier Bangkok", "note": "The free vantage, straight across from Wat Arun. Gets packed on show nights; arrive 7:15 and stand near the ferry pier or the walkway toward Maharaj. MRT Sanam Chai exit 1, 5-minute walk."}, {"id": "eaglenest", "c": "f", "n": "Eagle Nest Bar", "q": "Eagle Nest Bar Sala Arun Bangkok", "note": "Rooftop bar above Sala Arun, right on the bank, Wat Arun across the river, no dress code drama. Drinks and small plates; fine for watching the drones if Rongros cannot seat 7.", "w": "eve"}, {"id": "rongros", "c": "f", "n": "Rongros", "q": "Rongros Bangkok", "note": "Restaurant facing Wat Arun on the Old Town bank. Moved from Tuesday to Wednesday so the table is yours for the 7:50 drone show. Reserve a terrace table for 7 at 7 PM now, not later. Thai food, fair prices, no dress code.", "w": "eve", "star": true}, {"id": "salarattanakosin", "c": "f", "w": "eve", "n": "Sala Rattanakosin rooftop (The Roof)", "q": "Sala Rattanakosin Bangkok rooftop", "note": "Fifth-floor rooftop bar and restaurant on the Old Town bank, Wat Arun dead ahead. Dress code is relaxed, prices are hotel prices. Book the 7 PM slot and hold the table through the show. Backup if Rongros is full."}, {"id": "arunresidence", "c": "f", "w": "eve", "n": "The Deck by Arun Residence", "q": "The Deck by Arun Residence Bangkok", "note": "Terrace restaurant on the same stretch, Wat Arun across the water. Third option for a reserved table."}]}}, "dropped": {"name": "Cut from the plan", "hint": "Ayutthaya was cut on Nov 13 to keep the days before the wedding light. Kept here in case the group changes its mind.", "places": [{"id": "mahathat", "c": "a", "tag": "temple", "n": "Wat Mahathat", "q": "Wat Mahathat Ayutthaya", "note": "Ayutthaya. Buddha head in the tree roots.", "w": "am"}, {"id": "sanphet", "c": "a", "tag": "temple", "n": "Wat Phra Si Sanphet", "q": "Wat Phra Si Sanphet Ayutthaya", "note": "Ayutthaya. Three iconic chedis.", "w": "am"}, {"id": "bophit", "c": "a", "tag": "temple", "n": "Wihan Phra Mongkhon Bophit", "q": "Wihan Phra Mongkhon Bophit Ayutthaya", "note": "Ayutthaya. Large bronze Buddha.", "w": "am"}, {"id": "wonderblue", "c": "a", "n": "The Wonder Blue River Cruise", "q": "Wonder Blue River Cruise Ayutthaya", "note": "Ayutthaya. Daytime boat loop around the island, not a dinner cruise. Drop it if one cruise for the trip is the rule.", "w": "pm"}, {"id": "salahotel", "c": "a", "n": "Sala Ayutthaya (hotel)", "q": "Sala Ayutthaya", "note": "Ayutthaya. Riverside hotel, best breakfast view.", "w": "any"}, {"id": "salaeatery", "c": "f", "n": "Sala Ayutthaya Eatery and Bar", "q": "Sala Ayutthaya Eatery and Bar", "note": "Ayutthaya. Riverside at the hotel.", "w": "am"}, {"id": "pomphet", "c": "f", "n": "Baan Pomphet", "q": "Baan Pomphet Ayutthaya", "note": "Ayutthaya. Local restaurant.", "w": "eve"}, {"id": "boatnoodles", "c": "f", "n": "Nai Khlong Boat Noodles", "q": "Nai Khlong Boat Noodles Ayutthaya", "note": "Ayutthaya. Boat noodles.", "w": "pm"}, {"id": "laemson", "c": "a", "w": "any", "n": "Laem Son National Park", "q": "Laem Son National Park Ranong", "note": "Ranong, on the Andaman side, 8 hours from Bangkok. Not this trip."}, {"id": "samroiyot", "c": "a", "w": "any", "n": "Khao Sam Roi Yot National Park", "q": "Khao Sam Roi Yot National Park", "note": "Prachuap Khiri Khan, 3.5 hours south, the Phraya Nakhon cave. A full day you do not have; Koh Samet took the overnight slot."}]}, "bookings": [{"n": "Airbnb townhouse, Lat Phrao", "u": "https://www.airbnb.com/trips/v1", "when": "Now", "note": "Ask the host about early bag drop on Nov 23 (landing 5:25 AM, check-in 3 PM)."}, {"n": "Rongros terrace table, Wed Nov 25, 7 PM (drone show night)", "u": "https://www.google.com/maps/search/?api=1&query=Rongros%20Bangkok", "when": "Now", "note": "Table for 7 facing Wat Arun, hold it through the 7:50 drone show. Show nights sell out. If Rongros is full: Sala Rattanakosin rooftop, Eagle Nest, or The Deck. Tuesday is now just the krathong on the bank, no reservation needed."}, {"n": "Mahanakhon SkyWalk sunset tickets, Wed Nov 25", "u": "https://www.klook.com/", "when": "1 to 2 weeks out", "note": "Sunset slot 4 to 7 PM sells out and is the crowded one; book the 4:30 entry for 7 people. Add the drink package if the rooftop bar is the plan. Day tickets are cheaper but miss the point."}, {"n": "Saxophone Pub table, Tue Dec 1", "u": "https://www.saxophonepub.com/", "when": "A few days out", "note": "Reserve for 7 for the 9 PM set. Check the week's band lineup on their Facebook first; backup Tuesday is Nov 24 after the Old Town evening."}, {"n": "Bubble in the Forest Cafe, Thu Nov 26", "u": "https://web.hungryhub.com/", "when": "2 weeks out", "note": "Book a set menu for 7 on Hungry Hub for 12:30 on the 26th. Walk-ins queue."}, {"n": "Koh Samet van and boat", "u": "https://12go.asia/", "when": "2 weeks out", "note": "Book a van for 7 Bangkok to Ban Phe and back on 12Go, or ask the Airbnb host for a driver. Boat tickets are bought at the pier. If overnight, book one night on Sai Kaew or Ao Prao for 7."}, {"n": "West day trip van, Thu Nov 26", "u": "https://www.bangkokbeyond.com/en/damnoen-saduak-floating-market-and-maeklong-railway-market-day-tour", "when": "1 to 2 weeks out", "note": "Two ways: a private guided tour with hotel pickup (Bangkok Beyond and similar run private family tours with the long-tail ride included), or just a 10-seat van for the day booked through the Airbnb host and pay the boats yourselves. With 7 people private is cheaper per head than a shared tour and starts from Lat Phrao, which shared tours will not."}, {"n": "Rajadamnern Muay Thai", "u": "https://rajadamnern.com/", "when": "When the fight calendar posts", "note": "Check which night has a card. Fits any evening except the 28th."}, {"n": "Koh Samet dive, Mon Nov 30 afternoon", "u": "https://www.google.com/maps/search/?api=1&query=Ploy%20Scuba%20Diving%20Koh%20Samet", "when": "This week", "note": "Message Ploy Scuba (Sai Kaew) and Ao Prao Divers on Facebook or WhatsApp: 2 divers, Mon Nov 30 afternoon, certified or Discover Scuba, ask for the trip time and price. Bring cert cards if you have them. Ask the same shop to book the kids' snorkel boat for the same window."}, {"n": "Grand Palace", "u": "https://www.royalgrandpalace.th/en/home", "when": "No booking", "note": "Open 8:30 to 4:30, tickets until 3:30, 500 baht. Covered shoulders and knees for everyone."}, {"n": "Loy Krathong, Tue Nov 24", "u": "https://www.esimpass.com/en/events/loy-krathong", "when": "Nothing to book", "note": "TAT's Vijit schedule treats Tue Nov 24 as a no-show night, which lines up with Loy Krathong on the 24th. Krathongs are sold on the bank for 50 to 100 baht; pick a bread or natural one, not foam."}, {"n": "Vijit Chao Phraya official schedule", "u": "https://en.thairath.co.th/lifestyle/travel/2970821", "when": "Done, dates are out", "note": "Drones at Wat Arun Wed and Fri 7:50 PM. Fireworks at Memorial Bridge Sat and Sun 8:45 PM (your wedding night is one). Fri nights add Krung Thep Bridge fireworks plus drones and the Rama VIII waterfall. Times can shift, recheck the week of."}, {"n": "Wedding transport, Nov 28", "u": "https://www.google.com/maps/search/?api=1&query=Santa%20Cruz%20Church%20Kudi%20Chin%20Bangkok", "when": "Book the day before", "note": "Two Grabs or one van for 7 to Santa Cruz Church by 2:30 PM. Saturday traffic, leave Lat Phrao by 1:30. Coming home you will leave after the 8:45 fireworks, so book the return Grab from the church for 9:15, or have the van wait."}, {"n": "Return flights, Dec 2", "u": "https://www.united.com/en/us/manageres/mytrips", "when": "Dec 1", "note": "Online check-in. Leave Lat Phrao by 1:30 PM for a 4:55 PM departure."}], "contingencies": ["Mahanakhon rooftop closed for rain: the 74th-floor indoor deck still runs and re-entry is allowed when the roof reopens. Rooftop bar fallback: Dusit Thani's Spire bar next to Central Park, or Akara Sky Hanuman on Dec 1.", "Someone wants a second Samet night: the only slot is Sun 29 to Tue Dec 1, which trades away Chatuchak Sunday. Or Thu 26 to Fri 27, which puts a 3-hour van ride the afternoon before the wedding. Neither is free; one night is the clean version.", "Rain or too hot: Siam Paragon, MBK, Terminal 21, Bangsue Red Building, Central Ladprao. All under AC.", "Flooded or closed temple on the 24th: Wat Saket and Wat Arun are the backups. Ignore anyone outside the Grand Palace saying it is closed.", "Someone is too tired on the 27th: drop the canal boat, keep the morning at the stay. The 28th is the priority.", "Chatuchak rained out on the 29th: Bangsue Red Building and Union Mall are indoor and close by.", "Grab surge or no cars: BTS to Mo Chit or MRT to Lat Phrao are both near the stay. Keep 500 baht cash per person for taxis and canal boats.", "Koh Samet too far for the group: cut it, Mon 30 becomes the Thonburi canal morning, Bang Krachao goes back on Dec 1 morning. The west day trip stays on the 26th either way.", "Bubble in the Forest is full on the 26th: Maeklong and Damnoen Saduak stand alone, lunch at the floating market stalls, home by 1:30.", "6:30 AM is too much on the 26th: skip Maeklong, leave at 8, boats at Damnoen Saduak by 10, still fine. Or swap the whole day for Thonburi canals and keep sleeping.", "No dive boat Monday afternoon (weather, no instructor): dive Tuesday morning and take the 1 PM boat back, Saxophone still works. If Tuesday is off too, join the kids' snorkel boat; do not dive Wednesday morning before a flight.", "Drone show rained out or the kids are wiped on Wed 25: Fri 27 is the strongest festival night (Wat Arun drones 7:50, Krung Thep Bridge fireworks plus drones and the Rama VIII waterfall 8:45). It costs the rest day its evening, so only if everyone is fresh and the wedding outfits are already sorted.", "Cruise company says the boat docks at 8 sharp on the 28th: fine, the fireworks are 300 m from the pier. Walk to the Wat Kalayanamit riverfront, watch, Grab home at 9:15.", "Loy Krathong turns out to be the 25th, not the 24th: float the krathong from Tha Tien before the drone show, the plan does not move."], "apps": [{"g": "Before you land", "items": [{"n": "Thailand Digital Arrival Card (TDAC)", "u": "https://tdac.immigration.go.th/", "note": "Mandatory, free, replaces the paper card. Can only be submitted within 72 hours of arrival, so for the Nov 23 landing the window opens Nov 20. One person can file the whole group of 7 in one submission. Airlines check it at check-in. Use only the .go.th site."}, {"n": "eSIM (Airalo, Ubigi, or an AIS or TrueMove tourist SIM at the airport)", "u": "https://www.airalo.com/", "note": "Install before landing so Grab works from the arrivals hall."}]}, {"g": "Rides", "items": [{"n": "Grab", "u": "https://www.grab.com/th/en/", "note": "Rides, food delivery, and it shows the price before you book. Card on file. Set up and verify your number before the trip. Cars fit 4, so 7 people is two cars or a GrabVan where offered."}, {"n": "Bolt", "u": "https://bolt.eu/en-th/", "note": "Usually cheaper than Grab, fewer drivers at odd hours. Good second app."}]}, {"g": "Trains and boats", "items": [{"n": "MRT (Blue Line, your home line): tap a bank card", "u": "https://metro.bemplc.co.th/MRTEMV-Contactless-FAQs", "note": "Since June 2026 the MRT gates take contactless Visa, Mastercard and Apple or Google Pay directly. Tap in and out with the same card. No card to buy. The old MRT stored-value cards are no longer accepted."}, {"n": "BTS Skytrain: Rabbit card", "u": "https://www.bts.co.th/eng/tickets/ticket-rabbit.html", "note": "BTS gates do not take bank cards. Buy a Rabbit card at any BTS ticket office, about 200 baht with 100 loaded, passport required. Top-ups are cash only. Or buy single paper tickets. The MRT and BTS are separate systems, you tap out of one and into the other."}, {"n": "Airport Rail Link", "u": "", "note": "Suvarnabhumi to Makkasan or Phaya Thai. Token from the machine or tap a bank card."}, {"n": "Chao Phraya Express Boat and the Saen Saep canal boat", "u": "", "note": "Cash on board, a few baht. Orange-flag river boats are the tourist-friendly ones."}, {"n": "Google Maps", "u": "https://maps.google.com/", "note": "Reliable for MRT and BTS routing and walking. Download the Bangkok offline map."}]}, {"g": "Money", "items": [{"n": "Cash is still king", "u": "", "note": "Street food, markets, taxis, canal boats, temple entry: cash. Malls, 7-Eleven, hotels, Grab: cards."}, {"n": "ATMs", "u": "", "note": "Every Thai ATM charges foreign cards a flat fee per withdrawal, 220 to 350 baht in 2026 depending on bank and card type, plus your own bank's fee. So withdraw the maximum, 20,000 to 30,000 baht, a few times rather than small amounts. Always choose to be charged in baht, never the ATM's dollar conversion. AEON ATMs in Big C and Lotus's charge the least."}, {"n": "Exchange", "u": "", "note": "SuperRich booths (orange or green) give the best rates for clean US bills. Airport booths are poor. The Wise card is the easiest no-fee way to pay by card."}, {"n": "Thai QR payments", "u": "", "note": "Locals pay everything by PromptPay QR. It needs a Thai bank account, so it will not work for the group, except that Arliz may have one. Do not count on it."}]}, {"g": "Everything else", "items": [{"n": "LINE", "u": "https://line.me/en/", "note": "Thailand runs on LINE. The Airbnb host, drivers, and the wedding vendors will all want to message on it."}, {"n": "Google Translate", "u": "https://translate.google.com/", "note": "Download the Thai pack for offline. Camera mode for menus and signs."}, {"n": "Hungry Hub", "u": "https://web.hungryhub.com/", "note": "Restaurant bookings and set-menu deals. Bubble in the Forest goes through here."}, {"n": "Klook", "u": "https://www.klook.com/", "note": "Canal boat tours, Ayutthaya day trips, airport transfers, Rabbit card pickup at the airport."}, {"n": "12Go", "u": "https://12go.asia/", "note": "Intercity vans, trains and ferries, including the Koh Samet run."}]}], "rev": 3, "moves": {"2": [{"area": "daytrips", "to": "d26"}, {"area": "thonburi", "to": "pool"}], "3": [{"area": "chinatown", "to": "d24"}, {"area": "drones", "to": "d25"}]}}</script>
+<script>
+(function(){
+  var DATA = JSON.parse(document.getElementById('tripdata').textContent);
+  var CITY = DATA.city;
+  var LS_KEY = 'tripboard-' + CITY + '-v1';
+  var CATS = [['a','Attractions','--cat-a'],['f','Food','--cat-f'],['s','Shopping','--cat-s']];
+  var STAR_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.6 6 21l1.3-6.8-5-4.7 6.8-.8z"/></svg>';
+  var HANDLE_SVG = '<svg width="14" height="18" viewBox="0 0 14 18" aria-hidden="true"><g fill="currentColor"><circle cx="4" cy="3" r="1.6"/><circle cx="10" cy="3" r="1.6"/><circle cx="4" cy="9" r="1.6"/><circle cx="10" cy="9" r="1.6"/><circle cx="4" cy="15" r="1.6"/><circle cx="10" cy="15" r="1.6"/></g></svg>';
+
+  function defaultState(){
+    var days = {};
+    DATA.days.forEach(function(d){ days[d.id] = d.areas.slice(); });
+    var stars = {};
+    Object.keys(DATA.areas).forEach(function(a){
+      (DATA.areas[a].places || []).forEach(function(p){ if(p.star) stars[p.id] = true; });
+    });
+    return {days: days, stars: stars};
+  }
+  function normalize(s){
+    var base = defaultState();
+    var out = {days:{}, stars: Object.assign({}, base.stars, (s && s.stars) || {}), rev: (s && s.rev) || 0};
+    var seen = {};
+    // starred-by-default places that were added to the plan later must not be lost to an older saved state
+    // layout revisions: when the plan moves an area to another day, apply it once to older saved states
+    if(DATA.rev && out.rev < DATA.rev && s && s.days && DATA.moves){
+      Object.keys(DATA.moves).map(Number).sort(function(a,b){return a-b;}).forEach(function(r){
+        if(r <= out.rev) return;
+        DATA.moves[r].forEach(function(m){
+          Object.keys(s.days).forEach(function(k){ s.days[k] = s.days[k].filter(function(a){ return a !== m.area; }); });
+          if(!s.days[m.to]) s.days[m.to] = [];
+          s.days[m.to].push(m.area);
+        });
+      });
+      out.rev = DATA.rev;
+    }
+    if(DATA.rev && out.rev < DATA.rev) out.rev = DATA.rev;
+    DATA.days.forEach(function(d){
+      var list = (s && s.days && Array.isArray(s.days[d.id])) ? s.days[d.id] : [];
+      out.days[d.id] = list.filter(function(a){ if(!DATA.areas[a] || DATA.areas[a].fixed || seen[a]) return false; seen[a]=true; return true; });
+    });
+    // fixed blocks (flights, stays, the wedding) always sit at their default spot; any other area missing from the saved state goes back to its default day
+    DATA.days.forEach(function(d){
+      d.areas.forEach(function(a, i){
+        if(DATA.areas[a].fixed){ out.days[d.id].splice(Math.min(i, out.days[d.id].length), 0, a); seen[a]=true; }
+        else if(!seen[a]){ out.days[d.id].push(a); seen[a]=true; }
+      });
+    });
+    return out;
+  }
+
+  var state = defaultState();
+  var filterStar = false;
+  var db = null, docRef = null, writer = null, localDirty = false, remoteState = null;
+
+  // ---------- persistence ----------
+  function readLocal(){ try{ var raw = localStorage.getItem(LS_KEY); return raw ? JSON.parse(raw) : null; }catch(e){ return null; } }
+  function writeLocal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+  function readFilter(){ try{ return localStorage.getItem(LS_KEY+'-filter') === '1'; }catch(e){ return false; } }
+  function writeFilter(){ try{ localStorage.setItem(LS_KEY+'-filter', filterStar ? '1' : '0'); }catch(e){} }
+
+  var pill = document.getElementById('statusPill');
+  var notice = document.getElementById('notice');
+  var noticeText = document.getElementById('noticeText');
+  var resetBtn = document.getElementById('resetBtn');
+  function setStatus(text, live){ pill.textContent = text; pill.className = 'pill' + (live ? ' live' : ''); }
+  function showNotice(text, showReset){ noticeText.textContent = text; resetBtn.hidden = !showReset; notice.hidden = false; }
+
+  var saveTimer = null;
+  function save(){
+    writeLocal();
+    if(!db || writer === false){ localDirty = true; if(db){ showNotice('Changes here stay on this device. The shared plan is the one the trip owner edits.', !!remoteState); } return; }
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){
+      var body = JSON.parse(JSON.stringify(state));
+      docRef.set(body).then(function(){ writer = true; setStatus('Shared plan, saved', true); })
+        .catch(function(e){
+          if(e && e.code === 'invalid_argument'){ writer = false; localDirty = true; setStatus('Saved on this device'); showNotice('Changes here stay on this device. The shared plan is the one the trip owner edits.', !!remoteState); }
+          else { setStatus('Save failed, will retry on next change'); }
+        });
+    }, 400);
+  }
+
+  // ---------- rendering ----------
+  var board = document.getElementById('board');
+  function mapsUrl(q){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q); }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function placeLi(p){
+    var li = document.createElement('li');
+    li.className = 'place' + ((filterStar && !state.stars[p.id]) ? ' hide' : '');
+    var on = !!state.stars[p.id];
+    li.innerHTML = '<button class="star" aria-pressed="' + on + '" aria-label="' + (on ? 'Agreed. Tap to unstar' : 'Mark as agreed') + '" data-star="' + esc(p.id) + '">' + STAR_SVG + '</button>' +
+      '<div>' + (p.w && p.w !== 'any' ? '<i class="when ' + p.w + '">' + p.w + '</i>' : '') + '<a href="' + mapsUrl(p.q) + '" target="_blank" rel="noopener">' + esc(p.n) + '</a>' + (p.tag ? '<span class="tag">' + esc(p.tag) + '</span>' : '') +
+      (p.note ? '<span class="note">' + esc(p.note) + '</span>' : '') + '</div>';
+    return li;
+  }
+
+  function fixedBlockEl(areaId){
+    var a = DATA.areas[areaId];
+    var el = document.createElement('section');
+    el.className = 'block fixed'; el.dataset.area = areaId;
+    var head = document.createElement('div'); head.className = 'bhead';
+    head.innerHTML = '<div class="btitle"><h2>' + esc(a.name) + '</h2>' + (a.hint ? '<p class="hint">' + esc(a.hint) + '</p>' : '') + '</div><span class="fixedtag">Fixed</span>';
+    el.appendChild(head);
+    var ul = document.createElement('ul'); ul.className = 'lines';
+    (a.lines || []).forEach(function(l){
+      var li = document.createElement('li');
+      li.innerHTML = '<span class="t">' + esc(l.t || '') + '</span><span>' + (l.q ? '<a href="' + mapsUrl(l.q) + '" target="_blank" rel="noopener">' + esc(l.n) + '</a>' : '<strong>' + esc(l.n) + '</strong>') + (l.note ? '<span class="note">' + esc(l.note) + '</span>' : '') + '</span>';
+      ul.appendChild(li);
+    });
+    el.appendChild(ul);
+    return el;
+  }
+
+  function blockEl(areaId, dayId, idx, count, globalFirst, globalLast){
+    var a = DATA.areas[areaId];
+    if(a.fixed) return fixedBlockEl(areaId);
+    var el = document.createElement('section');
+    el.className = 'block'; el.dataset.area = areaId;
+    var head = document.createElement('div'); head.className = 'bhead';
+    head.innerHTML = '<span class="handle" title="Drag to another day" aria-hidden="true">' + HANDLE_SVG + '</span>' +
+      '<div class="btitle"><h2>' + esc(a.name) + '</h2>' + (a.hint ? '<p class="hint">' + esc(a.hint) + '</p>' : '') + '</div>' +
+      '<div class="mv"><button data-move="up" data-area="' + esc(areaId) + '" aria-label="Move ' + esc(a.name) + ' up"' + (globalFirst ? ' disabled' : '') + '>&#8593;</button>' +
+      '<button data-move="down" data-area="' + esc(areaId) + '" aria-label="Move ' + esc(a.name) + ' down"' + (globalLast ? ' disabled' : '') + '>&#8595;</button></div>';
+    el.appendChild(head);
+    var cols = document.createElement('div'); cols.className = 'cols';
+    CATS.forEach(function(c){
+      var col = document.createElement('div'); col.className = 'col';
+      col.innerHTML = '<h3 style="--c:var(' + c[2] + ')"><i class="dot" style="--c:var(' + c[2] + ')"></i>' + c[1] + '</h3>';
+      var ul = document.createElement('ul');
+      var W = {am:0, any:1, pm:2, eve:3};
+      var items = a.places.filter(function(p){ return p.c === c[0]; }).sort(function(x, y){ return (W[x.w] === undefined ? 1 : W[x.w]) - (W[y.w] === undefined ? 1 : W[y.w]); });
+      if(!items.length){ var e = document.createElement('li'); e.className = 'empty'; e.textContent = 'Nothing yet'; ul.appendChild(e); }
+      items.forEach(function(p){ ul.appendChild(placeLi(p)); });
+      col.appendChild(ul); cols.appendChild(col);
+    });
+    el.appendChild(cols);
+    // drag from the handle only
+    var handle = head.querySelector('.handle');
+    handle.addEventListener('mousedown', function(){ el.setAttribute('draggable','true'); });
+    el.addEventListener('dragstart', function(ev){ dragging = areaId; el.classList.add('dragging'); try{ ev.dataTransfer.setData('text/plain', areaId); ev.dataTransfer.effectAllowed = 'move'; }catch(e){} });
+    el.addEventListener('dragend', function(){ dragging = null; el.classList.remove('dragging'); el.removeAttribute('draggable'); clearPlaceholder(); });
+    return el;
+  }
+
+  function flatOrder(){
+    var out = [];
+    DATA.days.forEach(function(d){ state.days[d.id].forEach(function(a){ if(!DATA.areas[a].fixed) out.push({area:a, day:d.id}); }); });
+    return out;
+  }
+
+  function render(){
+    board.innerHTML = '';
+    var flat = flatOrder();
+    DATA.days.forEach(function(d){
+      var day = document.createElement('section'); day.className = 'day'; day.dataset.day = d.id;
+      var lab = document.createElement('div'); lab.className = 'daylabel';
+      var n = state.days[d.id].filter(function(a){ return !DATA.areas[a].fixed; }).length;
+      lab.innerHTML = esc(d.label) + '<small>' + (d.note ? esc(d.note) : (n + (n === 1 ? ' area' : ' areas'))) + '</small>';
+      var blocks = document.createElement('div'); blocks.className = 'blocks'; blocks.dataset.day = d.id;
+      if(d.trains && d.trains.length){
+        var tr = document.createElement('div'); tr.className = 'trains';
+        tr.innerHTML = '<h4>Getting there</h4><ul>' + d.trains.map(function(x){ return '<li><strong>' + esc(x.n) + '</strong>' + (x.note ? '<span class="note">' + esc(x.note) + '</span>' : '') + '</li>'; }).join('') + '</ul>';
+        blocks.appendChild(tr);
+      }
+      state.days[d.id].forEach(function(a, i){
+        var gi = flat.findIndex(function(f){ return f.area === a; });
+        blocks.appendChild(blockEl(a, d.id, i, state.days[d.id].length, gi === 0, gi === flat.length - 1));
+      });
+      wireDrop(blocks);
+      day.appendChild(lab); day.appendChild(blocks); board.appendChild(day);
+    });
+    renderDropped();
+  }
+
+  function renderDropped(){
+    var d = document.getElementById('dropped');
+    var dr = DATA.dropped;
+    if(!dr || !dr.places.length){ d.hidden = true; return; }
+    d.hidden = false;
+    d.innerHTML = '<summary>' + esc(dr.name) + ' (' + dr.places.length + ')</summary>' + (dr.hint ? '<p class="hint">' + esc(dr.hint) + '</p>' : '') + '<ul></ul>';
+    var ul = d.querySelector('ul');
+    dr.places.forEach(function(p){
+      var li = document.createElement('li');
+      li.innerHTML = '<i class="dot" style="--c:var(--cat-' + p.c + ')"></i><span><a href="' + mapsUrl(p.q) + '" target="_blank" rel="noopener">' + esc(p.n) + '</a>' + (p.note ? ' <span class="note">' + esc(p.note) + '</span>' : '') + '</span>';
+      ul.appendChild(li);
+    });
+  }
+
+  // ---------- moves ----------
+  function locate(areaId){
+    for(var i=0;i<DATA.days.length;i++){ var d = DATA.days[i].id; var k = state.days[d].indexOf(areaId); if(k>=0) return {day:d, dayIdx:i, idx:k}; }
+    return null;
+  }
+  function moveBy(areaId, dir){
+    var loc = locate(areaId); if(!loc) return;
+    var list = state.days[loc.day];
+    list.splice(loc.idx, 1);
+    if(dir < 0){
+      if(loc.idx > 0){ list.splice(loc.idx - 1, 0, areaId); }
+      else if(loc.dayIdx > 0){ state.days[DATA.days[loc.dayIdx - 1].id].push(areaId); }
+      else { list.splice(0, 0, areaId); }
+    } else {
+      if(loc.idx < list.length){ list.splice(loc.idx + 1, 0, areaId); }
+      else if(loc.dayIdx < DATA.days.length - 1){ state.days[DATA.days[loc.dayIdx + 1].id].unshift(areaId); }
+      else { list.push(areaId); }
+    }
+    state = normalize(state); render(); save();
+  }
+  function moveTo(areaId, dayId, index){
+    var loc = locate(areaId); if(!loc) return;
+    state.days[loc.day].splice(loc.idx, 1);
+    if(loc.day === dayId && loc.idx < index) index--;
+    state.days[dayId].splice(index, 0, areaId);
+    state = normalize(state); render(); save();
+  }
+
+  // ---------- drag and drop ----------
+  var dragging = null, ph = null;
+  function clearPlaceholder(){ if(ph && ph.parentNode) ph.parentNode.removeChild(ph); ph = null; document.querySelectorAll('.blocks.over').forEach(function(b){ b.classList.remove('over'); }); }
+  function wireDrop(container){
+    container.addEventListener('dragover', function(ev){
+      if(!dragging) return; ev.preventDefault();
+      try{ ev.dataTransfer.dropEffect = 'move'; }catch(e){}
+      container.classList.add('over');
+      if(!ph){ ph = document.createElement('div'); ph.className = 'placeholder'; }
+      var blocks = Array.prototype.filter.call(container.children, function(c){ return c.classList.contains('block') && !c.classList.contains('dragging') && !c.classList.contains('fixed'); });
+      var before = null;
+      for(var i=0;i<blocks.length;i++){ var r = blocks[i].getBoundingClientRect(); if(ev.clientY < r.top + r.height/2){ before = blocks[i]; break; } }
+      if(before) container.insertBefore(ph, before); else container.appendChild(ph);
+    });
+    container.addEventListener('dragleave', function(ev){ if(!container.contains(ev.relatedTarget)) container.classList.remove('over'); });
+    container.addEventListener('drop', function(ev){
+      ev.preventDefault(); if(!dragging) return;
+      var kids = Array.prototype.slice.call(container.children);
+      var idx = ph ? kids.indexOf(ph) : kids.length;
+      // index among blocks only (exclude the dragged block and the placeholder)
+      var n = 0; for(var i=0;i<idx;i++){ if(kids[i].classList.contains('block') && !kids[i].classList.contains('dragging')) n++; }
+      var id = dragging; clearPlaceholder(); dragging = null;
+      moveTo(id, container.dataset.day, n);
+    });
+  }
+
+  // ---------- events ----------
+  board.addEventListener('click', function(ev){
+    var s = ev.target.closest('[data-star]');
+    if(s){ var id = s.dataset.star; state.stars[id] = !state.stars[id]; if(!state.stars[id]) delete state.stars[id]; render(); save(); return; }
+    var m = ev.target.closest('[data-move]');
+    if(m){ moveBy(m.dataset.area, m.dataset.move === 'up' ? -1 : 1); }
+  });
+  var fb = document.getElementById('filterStar');
+  fb.addEventListener('click', function(){ filterStar = !filterStar; fb.setAttribute('aria-pressed', String(filterStar)); writeFilter(); render(); });
+  resetBtn.addEventListener('click', function(){ if(remoteState){ state = normalize(remoteState); localDirty = false; writeLocal(); notice.hidden = true; render(); } });
+
+  // ---------- boot ----------
+  (function(){
+    var prep = document.getElementById('prep');
+    var bl = document.getElementById('bookings'), cl = document.getElementById('contingencies');
+    (DATA.bookings || []).forEach(function(b){
+      var li = document.createElement('li');
+      li.innerHTML = '<span class="w">' + esc(b.when || '') + '</span><span>' + (b.u ? '<a href="' + esc(b.u) + '" target="_blank" rel="noopener">' + esc(b.n) + '</a>' : '<strong>' + esc(b.n) + '</strong>') + (b.note ? '<span class="note">' + esc(b.note) + '</span>' : '') + '</span>';
+      bl.appendChild(li);
+    });
+    (DATA.contingencies || []).forEach(function(c){ var li = document.createElement('li'); li.textContent = c; cl.appendChild(li); });
+    if(!(DATA.bookings || []).length && !(DATA.contingencies || []).length) prep.hidden = true;
+    var apps = document.getElementById('apps'), ag = document.getElementById('appsgrid');
+    (DATA.apps || []).forEach(function(g){
+      var box = document.createElement('div');
+      box.innerHTML = '<h3>' + esc(g.g) + '</h3>';
+      var ul = document.createElement('ul');
+      g.items.forEach(function(it){
+        var li = document.createElement('li');
+        li.innerHTML = (it.u ? '<a href="' + esc(it.u) + '" target="_blank" rel="noopener">' + esc(it.n) + '</a>' : '<strong>' + esc(it.n) + '</strong>') + (it.note ? '<span class="note">' + esc(it.note) + '</span>' : '');
+        ul.appendChild(li);
+      });
+      box.appendChild(ul); ag.appendChild(box);
+    });
+    if(!(DATA.apps || []).length) apps.hidden = true;
+    try{ if(localStorage.getItem(LS_KEY + '-apps') === 'open') apps.open = true; }catch(e){}
+    apps.addEventListener('toggle', function(){ try{ localStorage.setItem(LS_KEY + '-apps', apps.open ? 'open' : 'closed'); }catch(e){} });
+    try{ if(localStorage.getItem(LS_KEY + '-prep') === 'closed') prep.open = false; }catch(e){}
+    prep.addEventListener('toggle', function(){ try{ localStorage.setItem(LS_KEY + '-prep', prep.open ? 'open' : 'closed'); }catch(e){} });
+  })();
+  if(DATA.home){ document.getElementById('home').innerHTML = 'Home base: <a href="' + mapsUrl(DATA.home.q) + '" target="_blank" rel="noopener">' + esc(DATA.home.n) + '</a>' + (DATA.home.note ? ' <span class="note">' + esc(DATA.home.note) + '</span>' : ''); }
+  filterStar = readFilter(); fb.setAttribute('aria-pressed', String(filterStar));
+  var local = readLocal();
+  if(local){ state = normalize(local); localDirty = true; setStatus('Saved on this device'); } else { setStatus('Default plan'); }
+  render();
+
+  if(window.claude && window.claude.use){
+    Promise.all([window.claude.use('db'), window.claude.use('user')]).then(function(res){
+      db = res[0]; var user = res[1];
+      if(!db){ setStatus(local ? 'Saved on this device' : 'Default plan'); return; }
+      docRef = db.doc('plan/' + CITY);
+      var canWrite = user && user.can ? user.can('data.write') : null;
+      Promise.resolve(canWrite).then(function(cw){ if(cw === false) writer = false; if(cw === true) writer = true; }).catch(function(){});
+      docRef.onSnapshot(function(snap){
+        if(snap.exists){
+          remoteState = snap.data();
+          if(writer !== false || !localDirty){
+            state = normalize(remoteState); localDirty = false; writeLocal(); render();
+            setStatus(writer === false ? 'Shared plan' : 'Shared plan, live', true);
+            notice.hidden = true;
+          } else {
+            showNotice('You have local changes. The shared plan has been updated by the trip owner.', true);
+          }
+        } else {
+          // nothing shared yet: a writer's local or default state becomes the shared one on their next change
+          setStatus(local ? 'Saved on this device' : 'Default plan');
+        }
+      }, function(){ setStatus(local ? 'Saved on this device' : 'Default plan'); });
+    }).catch(function(){});
+  }
+})();
+</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/trip/sw.js",{scope:"/trip/"}).catch(function(){});}</script></body></html>

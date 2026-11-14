@@ -1,0 +1,492 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style><meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#27366b"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Tokyo trip"><link rel="manifest" href="/trip/tokyo/manifest.webmanifest"><link rel="apple-touch-icon" href="/favicon.png"><link rel="icon" href="/favicon.png"><title>Tokyo Trip Board</title></head><body><title>Tokyo Trip Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a ledger. Day labels down a narrow left rail, area blocks stacked beside them, three category columns inside each block. */
+:root{
+  --bg:#f5f2ea; --surface:#fffdf8; --fg:#1f1d1a; --muted:#6e6860; --line:#ddd6c8;
+  --accent:#27366b; --cat-a:#27366b; --cat-f:#b4532c; --cat-s:#3d6b4f; --star:#c89b1e;
+  --drop:#e9ecf5;
+  --display:"Shippori Mincho",Georgia,serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#16171b; --surface:#1f2127; --fg:#ebe6dc; --muted:#9a948a; --line:#33363e;
+  --accent:#9fb0e8; --cat-a:#9fb0e8; --cat-f:#e58b5c; --cat-s:#7fbf98; --star:#e2c35a;
+  --drop:#23283a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#16171b; --surface:#1f2127; --fg:#ebe6dc; --muted:#9a948a; --line:#33363e;
+  --accent:#9fb0e8; --cat-a:#9fb0e8; --cat-f:#e58b5c; --cat-s:#7fbf98; --star:#e2c35a;
+  --drop:#23283a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+a{color:inherit}
+.wrap{max-width:1100px;margin:0 auto}
+header{padding-block:28px 18px;border-bottom:2px solid var(--fg);display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,6vw,56px);line-height:1;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.sub{margin:10px 0 0;color:var(--muted);max-width:60ch}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;background:var(--c)}
+button{font:inherit;color:inherit;background:none;border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--fg)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button[aria-pressed="true"]:not(.star){background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.status{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.status .pill{border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.status .pill.live{border-color:var(--accent);color:var(--accent)}
+.notice{margin:14px 0 0;padding:10px 14px;border-left:3px solid var(--accent);background:var(--surface);font-size:14px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.notice[hidden]{display:none}
+
+.day{display:grid;grid-template-columns:140px 1fr;gap:0 18px;border-bottom:1px solid var(--line);padding-block:18px}
+.day:last-of-type{border-bottom:0}
+.daylabel{font-family:var(--display);font-weight:700;font-size:20px;line-height:1.1;padding-top:14px;position:sticky;top:env(safe-area-inset-top,0px);align-self:start;white-space:nowrap}
+.daylabel small{display:block;font-family:var(--body);font-weight:400;font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:.04em;white-space:normal;max-width:130px}
+.blocks{display:flex;flex-direction:column;gap:14px;min-height:56px;min-width:0;border-radius:6px;transition:background .15s}
+.blocks.over{background:var(--drop)}
+.blocks:not(:has(.block))::after{content:"Drag an area here";color:var(--muted);font-size:13px;padding:16px 12px;border:1px dashed var(--line);border-radius:6px;display:block}
+.blocks.over:not(:has(.block))::after{border-color:var(--accent);color:var(--accent)}
+.placeholder{height:4px;border-radius:2px;background:var(--accent)}
+
+.block{background:var(--surface);border:1px solid var(--line);border-radius:8px;min-width:0}
+.block.dragging{opacity:.4}
+.block.fixed{border-color:var(--accent);border-style:dashed;background:transparent}
+.block.fixed .bhead{border-bottom:0;padding-bottom:4px}
+.block.fixed h2{color:var(--accent)}
+.fixedtag{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:1px 6px;flex-shrink:0;margin-top:4px}
+.lines{list-style:none;margin:0;padding:4px 14px 12px;display:flex;flex-direction:column;gap:6px}
+.lines li{display:grid;grid-template-columns:82px 1fr;gap:10px;align-items:baseline}
+.lines .t{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);white-space:nowrap}
+.lines a{font-weight:500;text-decoration:none;border-bottom:1px solid var(--line)}
+.lines .note{display:block;font-size:12.5px;color:var(--muted)}
+.home{margin:6px 0 0;font-size:13px}
+.home a{font-weight:500}
+.bhead{display:flex;align-items:flex-start;gap:10px;padding:12px 14px 10px;border-bottom:1px solid var(--line)}
+.handle{cursor:grab;color:var(--muted);padding:4px 2px;margin:-4px 0;display:flex;align-items:center;touch-action:none}
+.handle:active{cursor:grabbing}
+.bhead h2{font-family:var(--display);font-weight:700;font-size:20px;margin:0;line-height:1.15}
+.hint{margin:3px 0 0;font-size:13px;color:var(--muted)}
+.btitle{flex:1;min-width:0}
+.mv{display:flex;gap:4px;flex-shrink:0}
+.mv button{padding:4px 9px;line-height:1;border-radius:6px}
+.mv button:disabled{opacity:.3;cursor:default}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.col{padding:10px 14px 12px;min-width:0;border-right:1px solid var(--line)}
+.col:last-child{border-right:0}
+.col h3{margin:0 0 6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--c);display:flex;align-items:center;gap:6px;font-weight:600}
+.col ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.col li{display:grid;grid-template-columns:22px 1fr;gap:6px;align-items:start}
+.col li.hide{display:none}
+.star{border:0;padding:0;width:22px;height:22px;display:grid;place-items:center;color:var(--line);border-radius:4px;margin-top:1px}
+.star:hover{color:var(--star)}
+.star[aria-pressed="true"]{color:var(--star)}
+.star svg{width:16px;height:16px;display:block}
+.place a{font-weight:500;text-decoration:none;border-bottom:1px solid var(--line)}
+.place a:hover{border-bottom-color:var(--fg)}
+.place .note{display:block;font-size:12.5px;color:var(--muted);margin-top:1px}
+.tag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--cat-a);border:1px solid currentColor;border-radius:3px;padding:0 4px;margin-left:5px;vertical-align:1px}
+.when{font-size:10px;letter-spacing:.08em;text-transform:uppercase;border-radius:3px;padding:1px 5px;margin-right:6px;vertical-align:1px;font-weight:600;background:var(--line);color:var(--fg)}
+.when.am{background:var(--star);color:var(--bg)}
+.when.pm{background:var(--accent);color:var(--bg)}
+.when.eve{background:var(--fg);color:var(--bg)}
+.rule{margin:8px 0 0;font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 14px}
+.rule span{display:inline-flex;align-items:center}
+.col li.empty{display:block;font-size:12.5px;color:var(--muted);font-style:italic}
+
+details.prep{margin:16px 0 4px;border:1px solid var(--accent);border-radius:8px;padding:10px 14px 12px;background:var(--surface)}
+details.prep summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:18px;color:var(--accent)}
+.prepgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px 28px;margin-top:10px}
+.prepgrid h3{margin:0 0 6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.prepgrid ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.prepgrid li{display:grid;grid-template-columns:118px 1fr;gap:10px;align-items:baseline;font-size:13.5px;min-width:0}
+.prepgrid .w{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.prepgrid a{font-weight:500;text-decoration:none;border-bottom:1px solid var(--line)}
+.prepgrid .note{display:block;font-size:12.5px;color:var(--muted)}
+.prepgrid ul.plain li{display:block;padding-left:14px;text-indent:-14px}
+.prepgrid ul.plain li::before{content:"\2192  ";color:var(--accent)}
+@media (max-width:760px){.prepgrid{grid-template-columns:1fr}.prepgrid li{grid-template-columns:96px 1fr}}
+.trains{border-left:3px solid var(--accent);padding:8px 12px;background:var(--surface);border-radius:0 6px 6px 0;font-size:13px}
+.trains h4{margin:0 0 4px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.trains ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.trains li strong{font-weight:600}
+.trains .note{display:block;color:var(--muted);font-size:12.5px}
+.appsgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px 24px;margin-top:10px}
+.appsgrid h3{margin:0 0 6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.appsgrid ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.appsgrid li{font-size:13.5px;min-width:0}
+.appsgrid a{font-weight:500;text-decoration:none;border-bottom:1px solid var(--line)}
+.appsgrid .note{display:block;font-size:12.5px;color:var(--muted)}
+details.dropped{margin-top:22px;border-top:2px solid var(--fg);padding-top:12px}
+details.dropped summary{cursor:pointer;font-family:var(--display);font-weight:700;font-size:18px}
+details.dropped .hint{margin-bottom:8px}
+details.dropped ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+details.dropped li{display:flex;gap:8px;align-items:baseline}
+footer{margin-top:36px;font-size:12px;color:var(--muted)}
+
+@media (max-width:760px){
+  .cols{grid-template-columns:1fr}
+  .col{border-right:0;border-bottom:1px solid var(--line)}
+  .col:last-child{border-bottom:0}
+}
+@media (max-width:560px){
+  .day{grid-template-columns:1fr;gap:6px}
+  .daylabel{position:static;padding-top:0;font-size:19px}
+  .daylabel small{display:inline;margin-left:8px}
+  header{padding-block:20px 14px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <div>
+    <p class="eyebrow">Trip board</p>
+    <h1>Tokyo</h1>
+    <p class="sub">Nov 18 to 22, 2026. Temples and shrines 7 to 9 AM, shops after 1 PM, Shinjuku and Shibuya after dark. Drag an area block to a different day. Star what we all agree on. Tap a name to open it in Google Maps.</p>
+    <p class="home" id="home"></p>
+    <p class="rule"><span><i class="when am">AM</i>outdoors, temples, before the heat</span><span><i class="when pm">PM</i>indoors or shaded</span><span><i class="when eve">EVE</i>after dark</span></p>
+  </div>
+  <div class="tools">
+    <div class="legend">
+      <span><i class="dot" style="--c:var(--cat-a)"></i>Attractions</span>
+      <span><i class="dot" style="--c:var(--cat-f)"></i>Food</span>
+      <span><i class="dot" style="--c:var(--cat-s)"></i>Shopping</span>
+      <span><i class="dot" style="--c:var(--star)"></i>Agreed</span>
+    </div>
+    <button id="filterStar" aria-pressed="false">Starred only</button>
+    <div class="status"><span class="pill" id="statusPill">Loading plan</span></div>
+  </div>
+</header>
+
+<div class="notice" id="notice" hidden><span id="noticeText"></span><button id="resetBtn" hidden>Use the shared plan</button></div>
+
+<details class="prep" id="apps"><summary>Apps, money and getting around</summary><div class="appsgrid" id="appsgrid"></div></details>
+
+<details class="prep" id="prep" open><summary>Book ahead and if plans change</summary><div class="prepgrid"><div><h3>Book ahead</h3><ul id="bookings"></ul></div><div><h3>If plans change</h3><ul class="plain" id="contingencies"></ul></div></div></details>
+
+<main id="board"></main>
+
+<details class="dropped" id="dropped"></details>
+<footer>Names link to a Google Maps search, so each one opens in the Maps app on a phone. Hours and closures change, check before you go.</footer>
+</div>
+
+<script id="tripdata" type="application/json">{"city": "tokyo", "title": "Tokyo Trip Board", "heading": "Tokyo", "sub": "Nov 18 to 22, 2026. Temples and shrines 7 to 9 AM, shops after 1 PM, Shinjuku and Shibuya after dark. Drag an area block to a different day. Star what we all agree on. Tap a name to open it in Google Maps.", "home": {"n": "Prism Court Ayase, 1-1-10 Towa, Adachi-ku, Tokyo", "q": "1-1-10 Towa Adachi-ku Tokyo Prism Court", "note": "Nearest station: Ayase (Chiyoda Line and JR Joban local). Three-bedroom apartment, 7 adults, Nov 18 to 23."}, "days": [{"id": "d18", "label": "Wed, Nov 18", "note": "Arrive 3:55 PM", "areas": ["fly-in"], "trains": [{"n": "Narita T1 to Ayase, about 1h 15m", "note": "Keisei Skyliner to Nippori (41 min, reserved seats, buy online). At Nippori take the JR Yamanote Line one stop to Nishi-Nippori, then the Chiyoda Line three stops to Ayase (Machiya, Kita-Senju, Ayase). With 7 people and bags a pre-booked van is the sane option."}]}, {"id": "d19", "label": "Thu, Nov 19", "areas": ["asakusa", "ueno", "jimbocho"], "trains": [{"n": "Ayase to Asakusa, about 25 min", "note": "Chiyoda Line 2 stops to Kita-Senju, change to the Tobu Skytree Line (local) 4 stops to Asakusa. Exit toward Kaminarimon."}, {"n": "Asakusa to Ueno, 10 min", "note": "Ginza Line 3 stops (Asakusa to Ueno). Ameyoko is outside the Shinobazu exit."}, {"n": "Ueno to Jimbocho, about 20 min", "note": "Walk 10 min from Ameyoko to Yushima, Chiyoda Line 1 stop to Shin-Ochanomizu, then 10 min on foot down to Yasukuni-dori. Or Hibiya Line 1 stop to Akihabara and walk 20 min."}, {"n": "Jimbocho to Koishikawa Korakuen, 20 min", "note": "Walk north 20 min, or Hanzomon Line 1 stop to Kudanshita, Tozai Line 1 stop to Iidabashi, exit C3, 3 min to the west gate. Be at the gate around 6 PM when it opens."}, {"n": "Korakuen back to Ayase, about 35 min", "note": "Exit the east gate, Korakuen Station, Marunouchi Line 4 stops to Otemachi, Chiyoda Line to Ayase (about 20 min)."}], "note": "East side: temples at dawn, market, books, lantern-lit garden"}, {"id": "d20", "label": "Fri, Nov 20", "areas": ["harajuku", "koenji", "shinjuku"], "trains": [{"n": "Ayase to Meiji-jingumae (Harajuku), about 35 min", "note": "Chiyoda Line, no transfer. Exit 2 puts you at the Meiji Shrine torii. Takeshita Street is across the road at JR Harajuku."}, {"n": "Harajuku to Koenji, about 20 min", "note": "JR Yamanote 2 stops to Shinjuku, change to the YELLOW Chuo-Sobu Local 3 stops to Koenji (Okubo, Higashi-Nakano, Nakano, Koenji). Do not take the orange Chuo Rapid: it skips Koenji on weekends and holidays. Friday is fine either way, but the yellow local is the safe habit. South exit for PAL arcade."}, {"n": "Koenji to Shinjuku, 7 min", "note": "Yellow Chuo-Sobu Local back 3 stops. West exit for the Government Building, east exit for Kabukicho and Omoide Yokocho."}, {"n": "Shinjuku back to Ayase, about 40 min", "note": "Marunouchi Line 6 stops to Kokkai-gijidomae, change to the Chiyoda Line to Ayase. Last Chiyoda trains to Ayase leave central Tokyo around midnight, check the app."}], "note": "West side: shrine, thrift, neon"}, {"id": "d21", "label": "Sat, Nov 21", "areas": ["ebisu", "shibuya", "roppongi"], "trains": [{"n": "Ayase to Ebisu, about 50 min", "note": "Chiyoda Line 1 stop to Kita-Senju, then the Hibiya Line direct to Ebisu (about 45 min, no change). Museum is 7 min from the east exit through Yebisu Garden Place."}, {"n": "Ebisu to Komaba-Todaimae, 15 min", "note": "JR Yamanote 1 stop to Shibuya, then Keio Inokashira Line 2 stops to Komaba-Todaimae, west exit, 7 min walk."}, {"n": "Komaba-Todaimae to Shibuya, 5 min", "note": "Inokashira Line back 2 stops. You arrive at the Mark City end, PARCO is a 10-minute walk."}, {"n": "Shibuya to Roppongi Hills, 15 to 20 min", "note": "Toei bus RH01 from the Shibuya Station east bus terminal runs straight to Roppongi Hills, or JR 1 stop to Ebisu and Hibiya Line 2 stops to Roppongi, exit 1C."}, {"n": "Roppongi back to Ayase, about 50 min", "note": "Hibiya Line direct to Kita-Senju (about 40 min), Chiyoda Line 1 stop. Last trains around midnight, but aim to leave Roppongi by 10:30."}], "note": "Bella's museums, Shibuya, Tokyo Tower lights"}, {"id": "d22", "label": "Sun, Nov 22", "note": "Leave for Haneda by 8:30 PM", "areas": ["ginza", "fly-out"], "trains": [{"n": "Ayase to Tsukiji, about 35 min", "note": "Chiyoda Line to Hibiya, change to the Hibiya Line 2 stops to Tsukiji. Hamarikyu is a 12-minute walk from the market."}, {"n": "Tsukiji to Hie Shrine or the Palace", "note": "Hie Shrine: Hibiya Line back to Hibiya, Chiyoda Line 2 stops to Akasaka. Palace East Gardens: Hibiya Line to Hibiya, Chiyoda Line 1 stop to Otemachi, or walk 15 min from Ginza."}, {"n": "Ginza back to Ayase for bags, about 35 min", "note": "Ginza and Hibiya stations connect underground. Chiyoda Line from Hibiya straight to Ayase."}, {"n": "Ayase to Haneda Terminal 3, about 1h 15m by train", "note": "Chiyoda Line to Hibiya, Hibiya Line 1 stop to Higashi-Ginza, then the Toei Asakusa Line through-service (Keikyu Airport Express) to Haneda Airport Terminal 3. Doable by 9:45 PM, but with 7 people and luggage book a van or two taxis and leave by 8:30."}]}, {"id": "pool", "label": "Not placed yet", "areas": ["setagaya", "elsewhere"]}], "areas": {"fly-in": {"name": "Fly Fresno to Tokyo", "fixed": true, "hint": "Tuesday departure, Wednesday arrival. Check-in at the apartment opens 3:00 PM, so go straight there.", "lines": [{"t": "Before you fly", "n": "Visit Japan Web, eSIM, train plan", "note": "Fill out Visit Japan Web and screenshot the QR code for immigration and customs. Buy an eSIM before leaving. Luggage forwarding from the airport only works if someone can receive it, so for an Airbnb carry it."}, {"t": "Tue 8:00 AM", "n": "FAT to LAX, UA 2315", "q": "Fresno Yosemite International Airport", "note": "Lands 9:13 AM. 1h 52m connection."}, {"t": "Tue 11:05 AM", "n": "LAX to NRT, UA 32", "q": "Narita International Airport Terminal 1", "note": "11h 50m on a 787-9. Lands Wed Nov 18, 3:55 PM."}, {"t": "~4:45 PM", "n": "Narita to Ayase", "q": "Ayase Station Tokyo", "note": "Skyliner to Nippori, then the Joban Line two stops to Ayase, about 1h 15m. Or book a van for 7 with luggage."}, {"t": "After 3 PM", "n": "Check in: Prism Court Ayase", "q": "Prism Court Ayase Adachi-ku Towa 1-1-10 Tokyo", "note": "Door code. The host needs every guest's passport details before they send the access guide, so submit those now."}]}, "fly-out": {"name": "Fly Tokyo to Bangkok", "fixed": true, "hint": "The flight is 20 minutes past midnight, so Sunday is the last Tokyo day. Checkout is technically Monday 10 AM but you will be gone Sunday night.", "lines": [{"t": "8:30 PM", "n": "Leave Ayase for Haneda Terminal 3", "q": "Haneda Airport Terminal 3", "note": "About 1 hour by train (Chiyoda Line to Hibiya, then Keikyu or Monorail). A van for 7 with bags is simpler at this hour."}, {"t": "Mon 12:20 AM", "n": "HND to BKK, Thai Airways TG 661", "q": "Suvarnabhumi Airport", "note": "7h 05m on an A350. Lands Bangkok 5:25 AM Mon Nov 23. 7 passengers on the booking."}]}, "asakusa": {"name": "Asakusa", "hint": "Closest area to the apartment, about 25 minutes. Senso-ji at 7 to 9 AM for quiet photos, Asakusa Shrine next door, snacks on Nakamise, then Kappabashi. Afternoon is now Jimbocho and the Korakuen night garden; Skytree is the rain fallback. Ueno is one stop away for late morning.", "places": [{"id": "sensoji", "c": "a", "tag": "temple", "n": "Senso-ji Temple", "q": "Senso-ji Temple Asakusa Tokyo", "note": "Oldest temple in Tokyo. Go early.", "w": "am", "star": true}, {"id": "asakusashrine", "c": "a", "w": "am", "tag": "shrine", "n": "Asakusa Shrine", "q": "Asakusa Shrine Tokyo", "note": "Right beside Senso-ji. Free, two minutes.", "star": true}, {"id": "nakamise", "c": "a", "n": "Nakamise-dori", "q": "Nakamise Shopping Street Asakusa", "note": "Street leading to Senso-ji. Snacks and souvenirs.", "w": "am"}, {"id": "batting", "c": "a", "n": "Asakusa Batting Stadium", "q": "Asakusa Batting Stadium", "note": "Batting cages.", "w": "pm"}, {"id": "tabanenoshi", "c": "f", "n": "Asakusa Chaya Tabanenoshi", "q": "Asakusa Chaya Tabanenoshi", "note": "Matcha creme brulee crepe.", "w": "am", "star": true}, {"id": "daifuku", "c": "f", "n": "Asakusa Strawberry Daifuku", "q": "Asakusa Strawberry Daifuku", "note": "Strawberry daifuku.", "w": "am"}, {"id": "menchi", "c": "f", "n": "Asakusa Menchi", "q": "Asakusa Menchi", "note": "Pork menchi-katsu bite.", "w": "am"}, {"id": "kaede", "c": "f", "n": "Kaede", "q": "Kaede dango Asakusa", "note": "Hanami dango.", "w": "am"}, {"id": "giraffa", "c": "f", "n": "Giraffa", "q": "Giraffa curry bread Asakusa", "note": "Curry cheese bread.", "w": "am"}, {"id": "softserve", "c": "f", "n": "Hokkaido soft serve", "q": "Hokkaido soft serve ice cream Asakusa", "note": "Stall not named in the video. Any Hokkaido milk stand on Nakamise works.", "w": "am"}, {"id": "kappabashi", "c": "s", "n": "Kappabashi Street", "q": "Kappabashi Kitchen Town Tokyo", "note": "Ceramics, knives, kitchen gear.", "w": "pm", "star": true}, {"id": "miffy", "c": "s", "n": "Flower Miffy", "q": "Flower Miffy Asakusa", "note": "Souvenirs.", "w": "pm"}, {"id": "sanrio", "c": "s", "n": "Sanrio Store Asakusa", "q": "Sanrio Asakusa", "note": "Souvenirs.", "w": "pm"}, {"id": "sumida", "c": "a", "w": "am", "n": "Sumida Park", "q": "Sumida Park Asakusa", "note": "Riverside walk with the Skytree view. Free."}, {"id": "tourist", "c": "a", "w": "am", "n": "Asakusa Culture Tourist Center", "q": "Asakusa Culture Tourist Information Center", "note": "Free observation deck looking down Nakamise to Senso-ji and across to Skytree. Opposite Kaminarimon gate.", "star": true}, {"id": "skytree", "c": "a", "w": "pm", "n": "Tokyo Skytree", "q": "Tokyo Skytree", "note": "From 2,100 yen. Indoor, afternoon slot. Walk or one stop from Asakusa. Book online to skip the ticket line."}, {"id": "kagetsudo", "c": "f", "w": "am", "n": "Kagetsudo", "q": "Kagetsudo Asakusa melon pan", "note": "Melon pan, morning snack."}, {"id": "daikokuya", "c": "f", "w": "pm", "n": "Daikokuya Tempura", "q": "Daikokuya Tempura Asakusa", "note": "Classic tendon lunch. Line moves."}, {"id": "imahan", "c": "f", "w": "eve", "n": "Asakusa Imahan", "q": "Asakusa Imahan sukiyaki", "note": "Sukiyaki dinner, pricier."}, {"id": "chopsticks", "c": "a", "w": "pm", "tag": "Verify", "n": "Chopstick-making class, Asakusa", "q": "Chopstick Making Japan Asakusa", "note": "Your note says Hashi Lab in Shinsaibashi, but Shinsaibashi is Osaka and Hashi Lab only has Kyoto and Osaka studios. The Tokyo version is Chopstick Making Japan in Asakusa, about 1 hour, roughly 1,000 to 1,500 yen per person, English host, book on Klook or Viator. Fits Thursday 11 AM between Nakamise and Ueno if you want it."}]}, "harajuku": {"name": "Harajuku", "hint": "Chiyoda Line direct from Ayase to Meiji-jingumae. Meiji Shrine and Yoyogi Park 7:30 to 9, then the ginkgo avenue at Gaien (Arliz) by 9:30, Togo Shrine and Takeshita Street when shops open around 11, quick lunch, then the train to Koenji by 1. Omotesando only if there is time.", "places": [{"id": "meiji", "c": "a", "tag": "Bella", "n": "Meiji Shrine", "q": "Meiji Jingu Shrine Tokyo", "note": "Forest shrine next to Harajuku Station. Bella's pick. Free, open from sunrise, go first.", "w": "am", "star": true}, {"id": "yoyogi", "c": "a", "w": "am", "n": "Yoyogi Park", "q": "Yoyogi Park Tokyo", "note": "Next to Meiji Shrine. Free."}, {"id": "gaien", "c": "a", "w": "am", "star": true, "tag": "Arliz", "n": "Meiji Jingu Gaien ginkgo avenue", "q": "Meiji Jingu Gaien Icho Namiki", "note": "Four rows of ginkgo for 300 m toward the Picture Gallery, gold from mid-November into early December. Free. From Meiji Shrine it is a 25-minute walk down Omotesando and Aoyama-dori, or Ginza Line Omotesando to Gaienmae, 1 stop. Weekday morning is the quiet window. If the trees are still green on Friday, see the contingency: Sunday morning works too."}, {"id": "togo", "c": "a", "w": "am", "tag": "shrine", "n": "Togo Shrine", "q": "Togo Shrine Harajuku", "note": "Quiet shrine a few minutes from Takeshita Street."}, {"id": "takeshita", "c": "a", "star": true, "n": "Takeshita Street", "q": "Takeshita Street Harajuku", "note": "Must-do. Crepes, photo booths, gacha machines.", "w": "am"}, {"id": "maisen", "c": "f", "n": "Tonkatsu Maisen Aoyama", "q": "Tonkatsu Maisen Aoyama Honten", "note": "Tonkatsu set lunch.", "w": "pm", "star": true}, {"id": "kiddyland", "c": "s", "n": "Kiddy Land", "q": "Kiddy Land Harajuku", "note": "Toys and character goods.", "w": "pm"}, {"id": "hp", "c": "s", "n": "Harry Potter flagship store", "q": "Harry Potter Store Harajuku", "note": "", "w": "pm"}, {"id": "caspace", "c": "s", "n": "Cas:Pace", "q": "Cas:Pace Harajuku phone case", "note": "Phone cases.", "w": "pm"}, {"id": "hiseki", "c": "s", "n": "Hiseki", "q": "Hiseki Harajuku coin jewelry", "note": "Coin necklaces and rings.", "w": "pm", "star": true}, {"id": "afuri", "c": "f", "w": "pm", "n": "AFURI Harajuku", "q": "AFURI Harajuku ramen", "note": "Yuzu shio ramen. Light lunch option."}, {"id": "gyozaro", "c": "f", "w": "pm", "n": "Harajuku Gyozaro", "q": "Harajuku Gyozaro", "note": "Cheap gyoza, quick line."}, {"id": "omotesando", "c": "s", "w": "pm", "n": "Omotesando", "q": "Omotesando Tokyo", "note": "Tree-lined boulevard of flagship stores. Shops open late morning, so after Takeshita."}, {"id": "kickslab", "c": "s", "w": "pm", "n": "KICKS LAB", "q": "KICKS LAB Harajuku", "note": "High-end sneaker boutique: retro Jordans, Nike SB, hype releases."}, {"id": "undefeated", "c": "s", "w": "pm", "n": "Undefeated Tokyo", "q": "Undefeated Tokyo Harajuku", "note": "LA streetwear meets Tokyo, rare collabs."}, {"id": "billys", "c": "s", "w": "pm", "n": "Billy's Tokyo", "q": "Billy's Tokyo Harajuku", "note": "Curated lifestyle sneaker store, exclusive models. Also a Shibuya branch."}, {"id": "abcmart", "c": "s", "w": "pm", "n": "ABC-MART Grand Stage", "q": "ABC-MART Grand Stage Harajuku", "note": "Flagship format of Japan's sneaker chain, Japan-only colorways turn up here. Branches in Shibuya and Ginza too."}, {"id": "menchirashi", "c": "f", "w": "pm", "n": "Menchirashi (carbonara udon)", "q": "Menchirashi udon Harajuku", "note": "The viral carbonara udon with parmesan and thick bacon is Menchirashi, 6-13-7 Jingumae, a side street off Cat Street. Mentsu-dan in Nishi-Shinjuku is a different, plain Sanuki udon chain. Lunch here before the Koenji train."}, {"id": "butter", "c": "f", "w": "pm", "tag": "Verify", "n": "Butter (thin pancakes, whole stick of butter)", "q": "Butter pancake Harajuku Omotesando", "note": "From the food video: thin pancakes served with a whole stick of house butter, Harajuku/Shibuya area. The exact shop and branch did not come through, search the name on Maps and check it is still open before building a stop around it."}]}, "shinjuku": {"name": "Shinjuku", "hint": "Arrive from Koenji around 4:30. Sunset is 4:30 PM in late November, so the Government Building deck will be city lights rather than sunset (it is open until 9:30 PM, which is better anyway). Godzilla Head, the 3D cat, then Omoide Yokocho or shabu-shabu.", "places": [{"id": "gyoen", "c": "a", "w": "am", "n": "Shinjuku Gyoen", "q": "Shinjuku Gyoen National Garden", "note": "500 yen. Big garden, closed Mondays. If Shinjuku ever becomes a full day, this is the morning."}, {"id": "tmg", "c": "a", "n": "Tokyo Metropolitan Government Building", "q": "Tokyo Metropolitan Government Building Observation Deck", "note": "Free observation decks.", "w": "pm", "star": true}, {"id": "godzilla", "c": "a", "n": "Godzilla Head", "q": "Godzilla Head Hotel Gracery Shinjuku", "note": "On top of Hotel Gracery, Kabukicho.", "w": "pm"}, {"id": "cross", "c": "a", "n": "Cross Shinjuku Vision", "q": "Cross Shinjuku Vision 3D billboard", "note": "3D cat billboard, east exit.", "w": "eve"}, {"id": "uogashi", "c": "f", "n": "Uogashi Nihon-Ichi", "q": "Uogashi Nihon-Ichi Shinjuku standing sushi", "note": "Standing sushi bar, order with the chef.", "w": "pm"}, {"id": "omoide", "c": "f", "n": "Omoide Yokocho", "q": "Omoide Yokocho Shinjuku", "note": "Memory Lane. Yakitori skewers and drinks, evening.", "w": "eve"}, {"id": "goku", "c": "f", "n": "Ramen Goku", "q": "Ramen Goku Shinjuku", "note": "From your notes. Confirm exact name before going.", "w": "pm"}, {"id": "shinjukushop", "c": "s", "n": "Shinjuku shopping", "q": "Shinjuku shopping Isetan Tokyo", "note": "No specific stores noted yet.", "w": "pm"}, {"id": "kabukicho", "c": "a", "w": "eve", "n": "Kabukicho", "q": "Kabukicho Shinjuku", "note": "Neon district. Godzilla Head is here. Evening walk."}, {"id": "goldengai", "c": "f", "w": "eve", "n": "Golden Gai", "q": "Golden Gai Shinjuku", "note": "Alley of 200 tiny bars, most seat 6 to 8. A group of 7 will need to split up. Cover charges common.", "star": true}, {"id": "fuunji", "c": "f", "w": "pm", "n": "Fuunji", "q": "Fuunji Shinjuku tsukemen", "note": "Tsukemen. Famous line, cash."}, {"id": "nabezo", "c": "f", "w": "eve", "n": "Nabezo Shinjuku", "q": "Nabezo Shinjuku shabu shabu", "note": "All-you-can-eat shabu-shabu, easy for a group of 7."}, {"id": "alpen", "c": "s", "w": "pm", "n": "Alpen Tokyo", "q": "Alpen Tokyo Shinjuku", "note": "Giant sports megastore near the east exit. Mainstream brands plus Japan-only colorways, fair prices. Open until 9 or 10 PM."}, {"id": "sushimon", "c": "f", "w": "pm", "n": "SUSHIMON Shinjuku", "q": "SUSHIMON Shinjuku Nishishinjuku", "note": "Seafood bowl eaten three ways, free rice and dashi refills at lunch, 1,000 to 2,000 yen. 7-8-12 Nishishinjuku, 8 min from the station. 11 AM to 10:30 PM.", "star": true}, {"id": "donki", "c": "s", "w": "eve", "n": "Don Quijote Shinjuku", "q": "Don Quijote Shinjuku Higashiguchi", "note": "24-hour discount megastore. Snacks, cosmetics, the Quasi PDRN mask, tax-free counter."}, {"id": "americandiner", "c": "f", "w": "eve", "n": "American Diner (tableside cheese burger)", "q": "American Diner Shinjuku cheeseburger bechamel", "note": "Retro diner with the sizzling three-cheese bechamel poured tableside, from the food video. Kid-pleaser dinner option in Shinjuku if the group is done with Japanese food for a night."}, {"id": "immersive", "c": "a", "w": "eve", "tag": "Verify", "n": "Immersive base Shinjuku", "q": "Immersive base Shinjuku", "note": "From your notes. Could not confirm what this is or where. If it is a ticketed show, book it; otherwise drop it. Check before Friday."}]}, "shibuya": {"name": "Shibuya", "hint": "Shibuya after the museums, from about 1 PM: Flipper's or ramen, PARCO floors for Nintendo and Pokemon, Center-Gai, then the crossing and Shibuya Sky at sunset (4:30), ramen or izakaya after, Roppongi if there is energy left.", "places": [{"id": "crossing", "c": "a", "n": "Shibuya Crossing", "q": "Shibuya Scramble Crossing", "note": "Watch from the Starbucks or Shibuya Sky.", "w": "any", "star": true}, {"id": "shibuyasky", "c": "a", "w": "eve", "n": "Shibuya Sky", "q": "Shibuya Sky Scramble Square", "note": "From 2,200 yen. Rooftop deck over the crossing. Book a sunset slot online, they sell out."}, {"id": "flippers", "c": "f", "w": "pm", "star": true, "n": "FLIPPER'S Shibuya (souffle pancakes)", "q": "FLIPPER'S Shibuya Jinnan", "note": "Your starred one. Kiseki souffle pancakes, made to order, about 1,300 yen. 1-15-5 Jinnan, up Koen-dori near PARCO and the Apple Store, 7 to 10 min from Hachiko exit. Lunch rush is 12 to 2, so arrive at 1:30 or reserve on TableCheck. Hours vary by source (opens 9 or 11, closes 7 or 8), check Maps that morning."}, {"id": "yasubee", "c": "f", "n": "Tsukemen Yasubee", "q": "Tsukemen Yasubee Shibuya", "note": "Dipping noodles. Vending machine ordering.", "w": "pm"}, {"id": "ichiran", "c": "f", "n": "Ichiran Shibuya", "q": "Ichiran Shibuya", "note": "Custom ramen in solo booths. Shows seat availability.", "w": "eve"}, {"id": "s109", "c": "s", "n": "Shibuya 109", "q": "Shibuya 109", "note": "", "w": "pm"}, {"id": "parco", "c": "s", "n": "Shibuya PARCO", "q": "Shibuya PARCO", "note": "Nintendo Tokyo and Pokemon Center are on the 6th floor.", "w": "pm"}, {"id": "nintendo", "c": "s", "n": "Nintendo Tokyo", "q": "Nintendo TOKYO Shibuya PARCO", "note": "Inside PARCO.", "w": "pm"}, {"id": "pokemon", "c": "s", "n": "Pokemon Center Shibuya", "q": "Pokemon Center Shibuya PARCO", "note": "Inside PARCO.", "w": "pm"}, {"id": "loft", "c": "s", "n": "Loft Shibuya", "q": "Shibuya Loft", "note": "Stationery and home goods.", "w": "pm"}, {"id": "disney", "c": "s", "n": "Disney Store Shibuya", "q": "Disney Store Shibuya", "note": "", "w": "pm"}, {"id": "centergai", "c": "s", "w": "pm", "n": "Center-Gai Street", "q": "Shibuya Center Gai", "note": "Main pedestrian street off the crossing. Shops and street culture.", "star": true}, {"id": "uobei", "c": "f", "w": "pm", "n": "Uobei Shibuya", "q": "Uobei Shibuya Dogenzaka", "note": "Conveyor sushi, order on a screen, cheap and fast.", "star": true}, {"id": "shirubee", "c": "f", "w": "eve", "n": "Shirubee", "q": "Shirubee Shibuya izakaya", "note": "Izakaya from your notes, and Bella wants an izakaya night. Confirm the branch, there are a few. Group of 7: call ahead or go at 5:30 when it opens.", "tag": "Bella izakaya"}, {"id": "frontroom", "c": "f", "w": "pm", "tag": "Verify", "n": "The Front Room (milk-bread French toast)", "q": "The Front Room cafe Tokyo French toast", "note": "Thick-cut milk bread French toast in honey butter, from the food video, Shibuya/Harajuku area. Name and location not confirmed, check Maps before going."}]}, "ginza": {"name": "Ginza", "hint": "Central Tokyo flow: Tsukiji for breakfast, Hamarikyu, Hie Shrine or the Palace gardens, Ginza shops after 1 PM, Marunouchi lights at dusk. Last day, bags out of the apartment by 8 PM.", "places": [{"id": "tsukiji", "c": "f", "w": "am", "n": "Tsukiji Outer Market", "q": "Tsukiji Outer Market", "note": "Pay as you eat, morning only. Many stalls close Sundays and Wednesdays, so on the Sunday plan expect a thinner market. Go by 9.", "star": true}, {"id": "hie", "c": "a", "tag": "shrine", "n": "Hie Shrine", "q": "Hie Shrine Akasaka Tokyo", "note": "Sunday morning stop. Akasaka, two stops from Ginza on the Marunouchi Line. Your Fushimi Inari alternative.", "w": "am"}, {"id": "hamarikyu", "c": "a", "w": "am", "n": "Hamarikyu Gardens", "q": "Hamarikyu Gardens", "note": "300 yen. Walk from Tsukiji. Teahouse on the pond."}, {"id": "palace", "c": "a", "n": "Imperial Palace", "q": "Imperial Palace East Gardens Tokyo", "note": "East Gardens are free. Closed Mondays and Fridays, open Sunday.", "w": "am"}, {"id": "hasegawa", "c": "f", "n": "Tonkatsu Hasegawa Higashi", "q": "Tonkatsu Hasegawa Higashi Ginza", "note": "Tonkatsu dinner.", "w": "eve", "star": true}, {"id": "hachigou", "c": "f", "w": "pm", "n": "Ginza Hachigou (Michelin ramen)", "q": "Ginza Hachigou ramen", "note": "Clear, French-technique chicken ramen, Michelin star, six counter seats. Sunday 11 AM to about 4, closed Mon. Walk-ins 11 to 12:30 (line before opening), reservations 12:30 to 2:30 on TableCheck, 500 yen fee each. Reservations for Sun Nov 22 open Sat Nov 14 at 9 AM Japan time. Six seats means two or three of you go and the rest eat at Ginza Kagari two blocks away."}, {"id": "udon", "c": "f", "n": "Udon lunch", "q": "udon restaurant Ginza Tokyo", "note": "Spot not named in the video.", "w": "pm"}, {"id": "musicbar", "c": "f", "n": "Ginza Music Bar", "q": "Ginza Music Bar", "note": "DJ mixes vinyl. Drinks, evening.", "w": "eve", "star": true}, {"id": "ginzashop", "c": "s", "n": "Ginza shopping", "q": "Ginza Chuo-dori shopping", "note": "Department stores and flagships.", "w": "pm"}, {"id": "tokyostation", "c": "a", "w": "any", "n": "Tokyo Station", "q": "Tokyo Station Marunouchi", "note": "Red-brick exterior on the Marunouchi side, free. Next to the Palace gardens."}, {"id": "ginzasix", "c": "a", "w": "pm", "n": "Ginza Six rooftop", "q": "Ginza Six rooftop garden", "note": "Free rooftop garden over Ginza."}, {"id": "sushizanmai", "c": "f", "w": "am", "n": "Sushi Zanmai Tsukiji", "q": "Sushi Zanmai Tsukiji Honten", "note": "Sushi breakfast, open 24 hours.", "star": true}, {"id": "tsujihan", "c": "f", "w": "pm", "n": "Tsujihan", "q": "Tsujihan Nihonbashi kaisendon", "note": "Kaisendon. Long line, go off-peak."}, {"id": "kagari", "c": "f", "w": "pm", "n": "Ginza Kagari", "q": "Ginza Kagari ramen", "note": "Chicken paitan ramen."}, {"id": "muji", "c": "s", "w": "pm", "n": "MUJI Ginza", "q": "MUJI Ginza flagship", "note": "Flagship with cafe and bakery."}]}, "setagaya": {"name": "Setagaya: Gotoku-ji and Shimokitazawa", "hint": "Half-day trip west, not placed. The cat train to Gotoku-ji, and Shimokitazawa is the backup thrift town. Rule stands: thrifting is Koenji on Friday, one day only.", "places": [{"id": "gotokuji", "c": "a", "tag": "temple", "n": "Gotoku-ji Temple", "q": "Gotokuji Temple Tokyo lucky cat", "note": "Lucky cat statues. Take the Tokyu Setagaya Line cat train.", "w": "am"}, {"id": "todoroki", "c": "a", "n": "Todoroki Valley", "q": "Todoroki Valley Tokyo", "note": "Guess from your note about a hidden valley near a station. Parts of the trail have been closed for tree work, check before going.", "w": "am"}, {"id": "shimokita", "c": "s", "w": "pm", "n": "Shimokitazawa vintage streets", "q": "Shimokitazawa vintage shops", "note": "Tokyo's other thrift town, denser than Koenji: New York Joe Exchange, Flamingo, Chicago, Haight and Ashbury, all within 5 minutes of the station. Odakyu or Inokashira Line, 4 min from Shibuya. Backup only, if Koenji gets rained out or the kids want round two on Saturday."}]}, "elsewhere": {"name": "Spread around the city", "hint": "Singles with no neighborhood yet. Konbini runs happen every day; the rest are food spots from the video whose exact address still needs pinning.", "places": [{"id": "konbini", "c": "f", "w": "any", "tag": "Bella", "n": "Konbini runs: 7-Eleven, FamilyMart, Lawson", "q": "convenience store Towa 1-chome Adachi Tokyo", "note": "Daily. Egg salad sandwich, onigiri, Famichiki, strawberry sandwiches, hot coffee. Nearest to the apartment is on the link. Also where you top up Suica with cash and pull yen from the 7-Bank ATM."}, {"id": "nakiryu", "c": "f", "n": "Nakiryu", "q": "Nakiryu ramen Otsuka Tokyo", "note": "Michelin-starred ramen in Otsuka. Expect a line.", "w": "pm"}, {"id": "pdrn", "c": "s", "n": "Quasi PDRN mask", "q": "Don Quijote Shinjuku", "note": "Korean skincare item from your notes. Try a big Don Quijote or drugstore.", "w": "pm"}, {"id": "izumo", "c": "f", "w": "pm", "star": true, "tag": "Verify", "n": "Izumo (large unagi bowl)", "q": "Izumo unagi Tokyo", "note": "Your starred unagi spot from the video, central Tokyo. The video gave only the name; several unagi shops use Izumo. Pin the exact one on Maps and attach it to the day you are nearest."}, {"id": "age3", "c": "f", "w": "pm", "tag": "Verify", "n": "Age.3 (fried milk bread sandwiches)", "q": "Age.3 fried bread sandwich Tokyo", "note": "Cream-stuffed fried milk bread, viral street snack, exact area not in the video. Confirm on Maps."}, {"id": "ikura", "c": "f", "w": "pm", "tag": "Verify", "n": "Salmon roe bowl spot (name unknown)", "q": "ikura don overflowing salmon roe bowl Tokyo", "note": "The theatrical overflowing ikura bowl from the video. No name was given. Search the clip caption or skip."}, {"id": "wagyumafia", "c": "f", "w": "eve", "n": "Wagyumafia", "q": "Wagyumafia Tokyo", "note": "Show-style wagyu counters, reservation only, expensive (plan on well over 20,000 yen a head at the kaiseki counters). The cutlet sandwich stand in Nakameguro is the affordable taste. Only if someone wants a splurge night."}, {"id": "jmcoffee", "c": "f", "w": "am", "tag": "Verify", "n": "JM Coffee", "q": "JM Coffee Tokyo", "note": "From your notes, no neighborhood given. Could not pin which JM Coffee you meant."}]}, "ueno": {"name": "Ueno", "hint": "East Tokyo flow from the guide: Asakusa, then Ueno late morning. Market food, then the park if there is time.", "places": [{"id": "ameyoko", "c": "f", "w": "am", "n": "Ameyoko Market", "q": "Ameyoko Market Ueno", "note": "Open-air market street. Street food, snacks, cheap goods. Late morning."}, {"id": "uenopark", "c": "a", "w": "pm", "n": "Ueno Park", "q": "Ueno Park Tokyo", "note": "Museums and park walks. Good from late morning per the guide."}]}, "koenji": {"name": "Koenji (thrifting)", "hint": "The one thrift stop of the trip, from the red-jacket video. Five shops in a loop around the PAL arcade and Look Street, south exit of Koenji Station. Shops open 11 or 12 and close 7 or 8, so this is the 1 to 4 PM block between Harajuku and Shinjuku. Bring passports for tax-free.", "places": [{"id": "mujin", "c": "s", "w": "pm", "n": "Mujin unmanned thrift shop", "q": "無人古着 高円寺", "note": "Unstaffed, everything under 900 yen. Wooden-hanger items 900, plastic-hanger 500. Pay at the vending machine and walk out. Go first, it is the budget stop."}, {"id": "odoriba", "c": "s", "w": "pm", "n": "Odoriba Vintage", "q": "Odoriba Vintage Koenji", "note": "Designer archive with hand-written tags: Gucci, Balenciaga, Zegna, Hermes, Saint Laurent, Issey Miyake, Chrome Hearts. The rare-find stop, not cheap."}, {"id": "boobytrap", "c": "s", "w": "pm", "n": "Booby Trap", "q": "Booby Trap Koenji vintage", "note": "Cheap and chaotic: custom patchwork denim, vintage anime tees, accessories. Reported Levi's at 700 yen. The kids' stop."}, {"id": "smallchange", "c": "s", "w": "pm", "n": "Small Change", "q": "Small Change Koenji vintage", "note": "Curated American vintage imports at the bottom of PAL arcade. Western, punk, blues, hats, jewelry. Tees around 1,900 yen."}, {"id": "2ndkoenji", "c": "s", "w": "pm", "n": "2nd STREET Koenji", "q": "2nd STREET Koenji", "note": "Two floors of Japan's biggest secondhand chain. Known for used designer jewelry and accessories at low prices (ring tagged 3,900 yen), caps, band tees."}, {"id": "koenjilunch", "c": "f", "w": "pm", "n": "Lunch on PAL arcade", "q": "Koenji PAL shopping street", "note": "Ramen and curry counters all along the arcade. No specific spot from your notes."}]}, "jimbocho": {"name": "Jimbocho and Korakuen (Bella and Arliz picks)", "hint": "Afternoon and evening on the east side after Ueno. Jimbocho Book Town from about 2 PM (shops open 10 or 11, most close 6 or 7, many are shut Sundays so Thursday is right). Then a 20-minute walk or two short trains to Koishikawa Korakuen for the autumn night opening, Nov 13 to 24 only, gates 6 to 9 PM, last entry 8. Enter at the west gate (Iidabashi exit C3), exit the east gate by Korakuen Station.", "places": [{"id": "jimbocho", "c": "s", "w": "pm", "star": true, "tag": "Bella +1 Arliz", "n": "Jimbocho Book Town", "q": "Jimbocho Book Town Tokyo", "note": "Some 130 secondhand bookshops on and around Yasukuni-dori. Browse Kitazawa Bookstore (English, upstairs), Komiyama (art and photo books), the curry shops are the local lunch. Jimbocho Station, Hanzomon, Mita and Shinjuku lines."}, {"id": "korakuen", "c": "a", "w": "eve", "star": true, "tag": "Arliz + Bella", "n": "Koishikawa Korakuen night illumination", "q": "Koishikawa Korakuen Garden", "note": "Edo-period garden lit for 12 nights, Nov 13 to 24, 6 to 9 PM, last entry 8 PM. Night ticket only: 1,000 yen in advance (KKday, Asoview, Seven Ticket), 1,200 at the gate, under-12s free. The red Tsutenkyo bridge is down for rebuilding this year, so the maples and the pond are the show. Allow about an hour."}, {"id": "jimbochocurry", "c": "f", "w": "pm", "n": "Jimbocho curry (Bondy or Kyoeido)", "q": "Bondy curry Jimbocho", "note": "Jimbocho is Tokyo's curry district. Bondy (European-style, baked potato on the side) or Kyoeido (smoky Sumatra curry). Lines but they move. Alternative lunch if Ueno ran late."}, {"id": "tokyodome", "c": "a", "w": "eve", "n": "Tokyo Dome City (LaQua)", "q": "Tokyo Dome City LaQua", "note": "Right beside the garden's east gate: ferris wheel, food, the winter illumination. Easy dinner stop before the Marunouchi Line home."}]}, "ebisu": {"name": "Ebisu and Komaba: Bella's museums", "hint": "Saturday morning before Shibuya. Both open at 10 and are closed Mondays, so Saturday is right. Hibiya Line runs direct from Kita-Senju to Ebisu. Photography museum first (7 min from Ebisu east exit, inside Yebisu Garden Place), then Shibuya and two Inokashira Line stops to the Folk Crafts Museum, back in Shibuya by 1.", "places": [{"id": "topmuseum", "c": "a", "w": "am", "star": true, "tag": "Bella", "n": "Tokyo Photographic Art Museum (TOP)", "q": "Tokyo Photographic Art Museum Ebisu", "note": "Japan's photography and moving-image museum, three exhibition floors in Yebisu Garden Place. Sat 10 to 6, last entry 5:30, closed Mon. Admission is per exhibition, usually 700 to 1,500 yen each, check topmuseum.jp for what is on Nov 21. Allow 60 to 90 minutes."}, {"id": "mingeikan", "c": "a", "w": "am", "star": true, "tag": "Bella", "n": "Japan Folk Crafts Museum (Mingeikan)", "q": "Japan Folk Crafts Museum Komaba", "note": "Soetsu Yanagi's 1936 house-museum of everyday craft: ceramics, textiles, lacquer. Quiet, small, 45 minutes. 10 to 5, last entry 4:30, closed Mon and between exhibitions (check mingeikan.or.jp that Nov 21 is open). About 1,200 yen. 7 min from Komaba-Todaimae west exit, Inokashira Line, 2 stops from Shibuya. Good museum shop."}, {"id": "ebisuyokocho", "c": "f", "w": "eve", "n": "Ebisu Yokocho", "q": "Ebisu Yokocho", "note": "Covered alley of 20 tiny izakaya a minute from Ebisu Station. Bella's \"izakaya somewhere\" candidate if Saturday ends in Ebisu instead of Shibuya. Cash, loud, perfect."}]}, "roppongi": {"name": "Roppongi and Azabudai: Tokyo Tower lights", "hint": "Optional Saturday-night cap after Shibuya Sky. Bus RH01 from Shibuya or the Hibiya Line from Ebisu, 15 to 20 min. Keyakizaka's winter lights are free and the Tokyo Tower photo is from the pedestrian bridge. Tokyo City View is a second paid deck in one day, so skip it unless Shibuya Sky sold out. teamLab Borderless is the rain-afternoon swap for Shibuya shopping, timed tickets only.", "places": [{"id": "keyakizaka", "c": "a", "w": "eve", "n": "Keyakizaka pedestrian bridge, Roppongi Hills", "q": "Keyakizaka Roppongi Hills pedestrian bridge", "note": "The classic winter shot: Tokyo Tower framed over Keyakizaka-dori's blue-white illumination. Lights run mid-November to Christmas, about 5 to 11 PM, free. Stand on the footbridge over the street by the Roppongi Hills Residences; crowded at 7, thinner after 9."}, {"id": "roppongideck", "c": "a", "w": "eve", "n": "Tokyo City View, Roppongi Hills (52F)", "q": "Tokyo City View Roppongi Hills Mori Tower", "note": "Indoor deck with Tokyo Tower and Skytree in the same frame. Reopens Nov 13, open to 10 PM, 2,000 yen at the door or 1,800 online, Sky Deck rooftop +500 when weather allows. Part of the deck facing Fuji may be restricted. Only if Shibuya Sky did not happen."}, {"id": "teamlab", "c": "a", "n": "teamLab Borderless (Azabudai Hills)", "q": "teamLab Borderless Azabudai Hills", "note": "Planets is in Toyosu on the bay, which is off the list, so this is Borderless at Azabudai Hills. 2 to 3 hours, timed online tickets only, about 3,800 to 4,400 yen. Ten minutes on foot from Roppongi Hills and from Tokyo Tower. Best use: a rain afternoon instead of Shibuya shopping.", "w": "pm"}, {"id": "tokyotower", "c": "a", "w": "eve", "n": "Tokyo Tower", "q": "Tokyo Tower observatory", "note": "Main deck tickets online, open late. Ten minutes on foot from Azabudai Hills. If Keyakizaka is the photo, you do not also need to go up."}]}}, "dropped": {"name": "Dropped earlier", "hint": "Kept so nothing is lost. Akihabara, Odaiba and Toyosu were ruled out earlier. Say the word and any of these go back.", "places": [{"id": "akihabara", "c": "a", "n": "Akihabara", "q": "Akihabara Electric Town", "note": "Arcades, electronics, anime. Decided to skip.", "w": "any"}, {"id": "ichiranaki", "c": "f", "n": "Ichiran Akihabara", "q": "Ichiran Akihabara", "note": "Use the Shibuya one instead.", "w": "any"}, {"id": "ryokan", "c": "a", "n": "Ryokan stay", "q": "ryokan Tokyo", "note": "Decided to skip.", "w": "any"}, {"id": "fushimi", "c": "a", "tag": "shrine", "n": "Fushimi Inari Shrine", "q": "Fushimi Inari Taisha Kyoto", "note": "Kyoto. Out of scope for this trip.", "w": "any"}, {"id": "animate", "c": "s", "w": "any", "n": "Animate Akihabara", "q": "Animate Akihabara", "note": "Akihabara is out."}, {"id": "maidcafe", "c": "f", "w": "any", "n": "Maid cafe, Akihabara", "q": "maid cafe Akihabara", "note": "Akihabara is out."}, {"id": "gundam", "c": "a", "w": "any", "n": "DiverCity Gundam statue", "q": "Unicorn Gundam Statue Odaiba", "note": "Odaiba. Tokyo Bay is out."}, {"id": "toyosumarket", "c": "f", "w": "any", "n": "Toyosu Market and Senkyaku Banrai", "q": "Toyosu Senkyaku Banrai", "note": "Toyosu. Tokyo Bay is out. Only matters if teamLab Planets goes back in."}, {"id": "odaibapark", "c": "a", "w": "any", "n": "Odaiba Seaside Park, Rainbow Bridge, Aqua City, bills", "q": "Odaiba Seaside Park", "note": "Tokyo Bay is out."}, {"id": "benizuru", "c": "f", "w": "pm", "n": "Benizuru (souffle pancakes, Akihabara)", "q": "Benizuru pancake Akihabara", "note": "Akihabara is off the list. Flipper's in Shibuya covers the souffle pancake."}, {"id": "disneyresort", "c": "a", "w": "any", "n": "Tokyo Disney Resort", "q": "Tokyo DisneySea", "note": "Listed as optional in the video. A full day you do not have; say the word and it replaces Saturday."}, {"id": "mentsudan", "c": "f", "w": "pm", "n": "Mentsu-dan, Nishi-Shinjuku", "q": "Mentsu-dan udon Shinjuku", "note": "Plain Sanuki udon chain. The carbonara udon is Menchirashi in Harajuku, which is on Friday."}]}, "bookings": [{"n": "Visit Japan Web", "u": "https://services.digital.go.jp/visit-japan-web/", "when": "Now", "note": "Everyone registers, screenshots the QR code. Immigration and customs."}, {"n": "Prism Court Ayase passports", "u": "https://secure.booking.com/myreservations.html", "when": "Now", "note": "Host will not send the door code until all 7 passports are submitted. Reservation on Booking.com."}, {"n": "Koishikawa Korakuen night ticket, Thu Nov 19", "u": "https://www.tokyo-park.or.jp/special/koishikawa_lightingup/index.html", "when": "Now", "note": "Night opening Nov 13 to 24, 6 to 9 PM, last entry 8. 1,000 yen advance on KKday, Asoview or Seven Ticket, 1,200 at the gate. Buy 7 adult tickets for the 19th. Enter the west gate (Iidabashi C3)."}, {"n": "Ginza Hachigou lunch, Sun Nov 22", "u": "https://www.tablecheck.com/en/shops/ginza-hachigou/reserve", "when": "Sat Nov 14, 9 AM Japan (Fri Nov 13, 4 PM California)", "note": "TableCheck opens each Saturday at 9 AM JST for the following Tue to Sun. Six seats total, 500 yen fee per seat, one bowl per person, no small children. Book 2 or 3 seats, 12:30 to 2:30 slot. Miss it and it is the 11 AM walk-in line or Ginza Kagari."}, {"n": "United flights", "u": "https://www.united.com/en/us/manageres/mytrips", "when": "Now", "note": "Confirm the booking covers everyone. The itinerary shown had 5 seats out and 1 home."}, {"n": "Koenji shop hours", "u": "https://www.google.com/maps/search/?api=1&query=Koenji%20PAL%20shopping%20street", "when": "No booking", "note": "Thrift shops open 11 to 12 and close 7 to 8. Mujin is unstaffed and cash at the machine. 2nd STREET takes cards."}, {"n": "Thai Airways TG 661", "u": "https://www.thaiairways.com/", "when": "Nov 22", "note": "Online check-in opens 24 hours before. 7 passengers on the booking."}, {"n": "Keisei Skyliner, Narita to Nippori", "u": "https://www.keisei.co.jp/keisei/tetudou/skyliner/us/", "when": "Before the trip", "note": "Buy online for the discount. Then the Joban Line two stops to Ayase. Or book an airport van for 7 with bags."}, {"n": "teamLab tickets", "u": "https://www.teamlab.art/e/borderless-azabudai/", "when": "2 to 3 weeks out", "note": "Borderless at Azabudai Hills. Sold online only, timed entry, no tickets at the door. Planets is Toyosu (bay side), which is off the list."}, {"n": "Shibuya Sky, Sat Nov 21 sunset", "u": "https://www.shibuya-scramble-square.com/sky/", "when": "2 weeks out", "note": "Sunset slots sell out first. Sunset is about 4:30 PM in late November, book the 4 PM entry."}, {"n": "Tokyo Skytree", "u": "https://www.tokyo-skytree.jp/en/", "when": "Optional", "note": "Online ticket skips the counter. Afternoon of the Asakusa day if the group wants it."}, {"n": "Tokyo Tower", "u": "https://www.tokyotower.co.jp/en/", "when": "Optional", "note": "Only if teamLab Borderless gets a slot, they are a ten-minute walk apart."}, {"n": "Klook, Japan activities", "u": "https://www.klook.com/", "when": "As needed", "note": "Michelle's code FEASTONITKLOOK for up to 10 percent off."}, {"n": "eSIM", "u": "", "when": "Before the trip", "note": "Any provider. Needed for Google Maps and train routing on day one."}, {"n": "Museum days, Sat Nov 21", "u": "https://topmuseum.jp/e/contents/index.html", "when": "Week of", "note": "Check what is on at the Photographic Art Museum (admission per show) and that the Folk Crafts Museum is not between exhibitions that week: mingeikan.or.jp. No tickets needed, pay at the door."}, {"n": "Tokyo City View, Sat Nov 21 (optional)", "u": "https://tcv.roppongihills.com/en/", "when": "Only if Shibuya Sky sells out", "note": "Online 1,800 yen vs 2,000 at the door. Keyakizaka lights are free and need no ticket."}, {"n": "Chopstick class, Asakusa (optional)", "u": "https://www.klook.com/", "when": "1 week out", "note": "Search \"chopstick making Asakusa\" on Klook or Viator. About 1 hour, around 1,000 to 1,500 yen. Hashi Lab itself is Kyoto and Osaka only."}], "contingencies": ["Guide's rule for Tokyo: start where quiet is the point, finish where the energy picks up at night. Do not cross the city twice in a day.", "Rain day: teamLab, Shibuya PARCO (Nintendo, Pokemon), Loft, Kappabashi. All indoors.", "Flight into NRT runs late: Skyliner runs until about 10:30 PM, after that it is a taxi or van. Message the host from the airport.", "Someone is wiped out on arrival: Wed 18 has nothing planned on purpose. Do not add to it.", "Sunday 22 overruns: bags must be out of the apartment and the group at Haneda T3 by 9:30 PM. Book the van the day before, not the day of.", "Imperial Palace East Gardens are closed Mon and Fri. If Ginza moves off Sunday, drop the gardens or swap in Hie Shrine only.", "Gaien ginkgo still green on Fri 20: do it Sun 22 morning from Hie Shrine, Ginza Line Tameike-sanno to Aoyama-itchome, 2 stops, then on to Ginza. Check the GoTokyo autumn forecast the day before.", "Koishikawa Korakuen rained out on the 19th: the night opening runs through Nov 24, so Fri 20 after Shinjuku or Sat 21 instead of Roppongi both work. Tickets are date-specific, so decide by the morning of the 19th.", "Ginza Hachigou seats gone: Ginza Kagari (chicken paitan, no reservations, line) is two blocks away. Do not spend Sunday in a two-hour ramen line.", "Koenji rained out or the kids want round two: Shimokitazawa, 4 min from Shibuya on the Inokashira Line. The one-thrift-day rule still stands, so it replaces Koenji, it does not add to it.", "Saturday runs long: Roppongi is the first thing to drop. Keyakizaka is a photo, not a destination."], "apps": [{"g": "Before you land", "items": [{"n": "Visit Japan Web", "u": "https://services.digital.go.jp/visit-japan-web/", "note": "Immigration and customs in one QR code. Everyone registers, screenshots the QR. Do it this week."}, {"n": "eSIM (Airalo, Ubigi or your carrier's plan)", "u": "https://www.airalo.com/", "note": "Install before departure. Maps and train routing are useless without data."}]}, {"g": "Trains", "items": [{"n": "Welcome Suica Mobile (iPhone)", "u": "https://www.jreast.co.jp/multi/en/wsmlp/", "note": "Free, no deposit, lives in Apple Wallet, top up with Apple Pay, valid 180 days. Set up before you fly. Or add Suica directly in Apple Wallet. Android phones bought outside Japan cannot run Suica, so Android users buy a physical Suica at the Narita machines."}, {"n": "Google Maps", "u": "https://maps.google.com/", "note": "Best train routing in Tokyo, shows platform, car and exit numbers. Download the Tokyo offline map too."}, {"n": "Japan Travel by Navitime", "u": "https://japantravel.navitime.com/en/", "note": "Backup router that handles last trains and IC fares well."}]}, {"g": "Rides", "items": [{"n": "GO Taxi", "u": "https://go.goinc.jp/en/", "note": "Japan's taxi app, card on file, works in English. Taxis fit 4, so 7 people is two cars."}, {"n": "Uber", "u": "https://www.uber.com/jp/en/", "note": "Calls regular taxis in Tokyo. Fine as a backup, same price."}, {"n": "Airport van for 7", "u": "https://www.klook.com/", "note": "Private transfer Narita to Ayase and Ayase to Haneda. Book on Klook with Michelle's code FEASTONITKLOOK. Removes the luggage-on-trains problem both ways."}]}, {"g": "Money", "items": [{"n": "Cards", "u": "", "note": "Visa and Mastercard tap work at chains, department stores and most restaurants. Many small ramen shops and shrine stalls are cash or Suica only."}, {"n": "Cash", "u": "", "note": "7-Eleven ATMs take US cards, English menus, fair rates. Pull 30,000 to 50,000 yen per person at the start, decline the ATM's dollar conversion."}, {"n": "Suica as a wallet", "u": "", "note": "Tap it at vending machines, convenience stores and lockers. Keep 3,000 to 5,000 yen loaded."}]}, {"g": "Everything else", "items": [{"n": "Google Translate", "u": "https://translate.google.com/", "note": "Download the Japanese pack for offline. Camera mode reads menus."}, {"n": "Tabelog", "u": "https://tabelog.com/en/", "note": "Japan's restaurant ratings. A 3.5 on Tabelog is excellent; Google ratings mean little here."}, {"n": "Klook", "u": "https://www.klook.com/", "note": "teamLab, Skytree, Shibuya Sky and transfers. Code FEASTONITKLOOK."}]}], "rev": 2, "moves": {}}</script>
+<script>
+(function(){
+  var DATA = JSON.parse(document.getElementById('tripdata').textContent);
+  var CITY = DATA.city;
+  var LS_KEY = 'tripboard-' + CITY + '-v1';
+  var CATS = [['a','Attractions','--cat-a'],['f','Food','--cat-f'],['s','Shopping','--cat-s']];
+  var STAR_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.5l2.9 6.2 6.8.8-5 4.7 1.3 6.8L12 17.6 6 21l1.3-6.8-5-4.7 6.8-.8z"/></svg>';
+  var HANDLE_SVG = '<svg width="14" height="18" viewBox="0 0 14 18" aria-hidden="true"><g fill="currentColor"><circle cx="4" cy="3" r="1.6"/><circle cx="10" cy="3" r="1.6"/><circle cx="4" cy="9" r="1.6"/><circle cx="10" cy="9" r="1.6"/><circle cx="4" cy="15" r="1.6"/><circle cx="10" cy="15" r="1.6"/></g></svg>';
+
+  function defaultState(){
+    var days = {};
+    DATA.days.forEach(function(d){ days[d.id] = d.areas.slice(); });
+    var stars = {};
+    Object.keys(DATA.areas).forEach(function(a){
+      (DATA.areas[a].places || []).forEach(function(p){ if(p.star) stars[p.id] = true; });
+    });
+    return {days: days, stars: stars};
+  }
+  function normalize(s){
+    var base = defaultState();
+    var out = {days:{}, stars: Object.assign({}, base.stars, (s && s.stars) || {}), rev: (s && s.rev) || 0};
+    var seen = {};
+    // starred-by-default places that were added to the plan later must not be lost to an older saved state
+    // layout revisions: when the plan moves an area to another day, apply it once to older saved states
+    if(DATA.rev && out.rev < DATA.rev && s && s.days && DATA.moves){
+      Object.keys(DATA.moves).map(Number).sort(function(a,b){return a-b;}).forEach(function(r){
+        if(r <= out.rev) return;
+        DATA.moves[r].forEach(function(m){
+          Object.keys(s.days).forEach(function(k){ s.days[k] = s.days[k].filter(function(a){ return a !== m.area; }); });
+          if(!s.days[m.to]) s.days[m.to] = [];
+          s.days[m.to].push(m.area);
+        });
+      });
+      out.rev = DATA.rev;
+    }
+    if(DATA.rev && out.rev < DATA.rev) out.rev = DATA.rev;
+    DATA.days.forEach(function(d){
+      var list = (s && s.days && Array.isArray(s.days[d.id])) ? s.days[d.id] : [];
+      out.days[d.id] = list.filter(function(a){ if(!DATA.areas[a] || DATA.areas[a].fixed || seen[a]) return false; seen[a]=true; return true; });
+    });
+    // fixed blocks (flights, stays, the wedding) always sit at their default spot; any other area missing from the saved state goes back to its default day
+    DATA.days.forEach(function(d){
+      d.areas.forEach(function(a, i){
+        if(DATA.areas[a].fixed){ out.days[d.id].splice(Math.min(i, out.days[d.id].length), 0, a); seen[a]=true; }
+        else if(!seen[a]){ out.days[d.id].push(a); seen[a]=true; }
+      });
+    });
+    return out;
+  }
+
+  var state = defaultState();
+  var filterStar = false;
+  var db = null, docRef = null, writer = null, localDirty = false, remoteState = null;
+
+  // ---------- persistence ----------
+  function readLocal(){ try{ var raw = localStorage.getItem(LS_KEY); return raw ? JSON.parse(raw) : null; }catch(e){ return null; } }
+  function writeLocal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+  function readFilter(){ try{ return localStorage.getItem(LS_KEY+'-filter') === '1'; }catch(e){ return false; } }
+  function writeFilter(){ try{ localStorage.setItem(LS_KEY+'-filter', filterStar ? '1' : '0'); }catch(e){} }
+
+  var pill = document.getElementById('statusPill');
+  var notice = document.getElementById('notice');
+  var noticeText = document.getElementById('noticeText');
+  var resetBtn = document.getElementById('resetBtn');
+  function setStatus(text, live){ pill.textContent = text; pill.className = 'pill' + (live ? ' live' : ''); }
+  function showNotice(text, showReset){ noticeText.textContent = text; resetBtn.hidden = !showReset; notice.hidden = false; }
+
+  var saveTimer = null;
+  function save(){
+    writeLocal();
+    if(!db || writer === false){ localDirty = true; if(db){ showNotice('Changes here stay on this device. The shared plan is the one the trip owner edits.', !!remoteState); } return; }
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){
+      var body = JSON.parse(JSON.stringify(state));
+      docRef.set(body).then(function(){ writer = true; setStatus('Shared plan, saved', true); })
+        .catch(function(e){
+          if(e && e.code === 'invalid_argument'){ writer = false; localDirty = true; setStatus('Saved on this device'); showNotice('Changes here stay on this device. The shared plan is the one the trip owner edits.', !!remoteState); }
+          else { setStatus('Save failed, will retry on next change'); }
+        });
+    }, 400);
+  }
+
+  // ---------- rendering ----------
+  var board = document.getElementById('board');
+  function mapsUrl(q){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q); }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function placeLi(p){
+    var li = document.createElement('li');
+    li.className = 'place' + ((filterStar && !state.stars[p.id]) ? ' hide' : '');
+    var on = !!state.stars[p.id];
+    li.innerHTML = '<button class="star" aria-pressed="' + on + '" aria-label="' + (on ? 'Agreed. Tap to unstar' : 'Mark as agreed') + '" data-star="' + esc(p.id) + '">' + STAR_SVG + '</button>' +
+      '<div>' + (p.w && p.w !== 'any' ? '<i class="when ' + p.w + '">' + p.w + '</i>' : '') + '<a href="' + mapsUrl(p.q) + '" target="_blank" rel="noopener">' + esc(p.n) + '</a>' + (p.tag ? '<span class="tag">' + esc(p.tag) + '</span>' : '') +
+      (p.note ? '<span class="note">' + esc(p.note) + '</span>' : '') + '</div>';
+    return li;
+  }
+
+  function fixedBlockEl(areaId){
+    var a = DATA.areas[areaId];
+    var el = document.createElement('section');
+    el.className = 'block fixed'; el.dataset.area = areaId;
+    var head = document.createElement('div'); head.className = 'bhead';
+    head.innerHTML = '<div class="btitle"><h2>' + esc(a.name) + '</h2>' + (a.hint ? '<p class="hint">' + esc(a.hint) + '</p>' : '') + '</div><span class="fixedtag">Fixed</span>';
+    el.appendChild(head);
+    var ul = document.createElement('ul'); ul.className = 'lines';
+    (a.lines || []).forEach(function(l){
+      var li = document.createElement('li');
+      li.innerHTML = '<span class="t">' + esc(l.t || '') + '</span><span>' + (l.q ? '<a href="' + mapsUrl(l.q) + '" target="_blank" rel="noopener">' + esc(l.n) + '</a>' : '<strong>' + esc(l.n) + '</strong>') + (l.note ? '<span class="note">' + esc(l.note) + '</span>' : '') + '</span>';
+      ul.appendChild(li);
+    });
+    el.appendChild(ul);
+    return el;
+  }
+
+  function blockEl(areaId, dayId, idx, count, globalFirst, globalLast){
+    var a = DATA.areas[areaId];
+    if(a.fixed) return fixedBlockEl(areaId);
+    var el = document.createElement('section');
+    el.className = 'block'; el.dataset.area = areaId;
+    var head = document.createElement('div'); head.className = 'bhead';
+    head.innerHTML = '<span class="handle" title="Drag to another day" aria-hidden="true">' + HANDLE_SVG + '</span>' +
+      '<div class="btitle"><h2>' + esc(a.name) + '</h2>' + (a.hint ? '<p class="hint">' + esc(a.hint) + '</p>' : '') + '</div>' +
+      '<div class="mv"><button data-move="up" data-area="' + esc(areaId) + '" aria-label="Move ' + esc(a.name) + ' up"' + (globalFirst ? ' disabled' : '') + '>&#8593;</button>' +
+      '<button data-move="down" data-area="' + esc(areaId) + '" aria-label="Move ' + esc(a.name) + ' down"' + (globalLast ? ' disabled' : '') + '>&#8595;</button></div>';
+    el.appendChild(head);
+    var cols = document.createElement('div'); cols.className = 'cols';
+    CATS.forEach(function(c){
+      var col = document.createElement('div'); col.className = 'col';
+      col.innerHTML = '<h3 style="--c:var(' + c[2] + ')"><i class="dot" style="--c:var(' + c[2] + ')"></i>' + c[1] + '</h3>';
+      var ul = document.createElement('ul');
+      var W = {am:0, any:1, pm:2, eve:3};
+      var items = a.places.filter(function(p){ return p.c === c[0]; }).sort(function(x, y){ return (W[x.w] === undefined ? 1 : W[x.w]) - (W[y.w] === undefined ? 1 : W[y.w]); });
+      if(!items.length){ var e = document.createElement('li'); e.className = 'empty'; e.textContent = 'Nothing yet'; ul.appendChild(e); }
+      items.forEach(function(p){ ul.appendChild(placeLi(p)); });
+      col.appendChild(ul); cols.appendChild(col);
+    });
+    el.appendChild(cols);
+    // drag from the handle only
+    var handle = head.querySelector('.handle');
+    handle.addEventListener('mousedown', function(){ el.setAttribute('draggable','true'); });
+    el.addEventListener('dragstart', function(ev){ dragging = areaId; el.classList.add('dragging'); try{ ev.dataTransfer.setData('text/plain', areaId); ev.dataTransfer.effectAllowed = 'move'; }catch(e){} });
+    el.addEventListener('dragend', function(){ dragging = null; el.classList.remove('dragging'); el.removeAttribute('draggable'); clearPlaceholder(); });
+    return el;
+  }
+
+  function flatOrder(){
+    var out = [];
+    DATA.days.forEach(function(d){ state.days[d.id].forEach(function(a){ if(!DATA.areas[a].fixed) out.push({area:a, day:d.id}); }); });
+    return out;
+  }
+
+  function render(){
+    board.innerHTML = '';
+    var flat = flatOrder();
+    DATA.days.forEach(function(d){
+      var day = document.createElement('section'); day.className = 'day'; day.dataset.day = d.id;
+      var lab = document.createElement('div'); lab.className = 'daylabel';
+      var n = state.days[d.id].filter(function(a){ return !DATA.areas[a].fixed; }).length;
+      lab.innerHTML = esc(d.label) + '<small>' + (d.note ? esc(d.note) : (n + (n === 1 ? ' area' : ' areas'))) + '</small>';
+      var blocks = document.createElement('div'); blocks.className = 'blocks'; blocks.dataset.day = d.id;
+      if(d.trains && d.trains.length){
+        var tr = document.createElement('div'); tr.className = 'trains';
+        tr.innerHTML = '<h4>Getting there</h4><ul>' + d.trains.map(function(x){ return '<li><strong>' + esc(x.n) + '</strong>' + (x.note ? '<span class="note">' + esc(x.note) + '</span>' : '') + '</li>'; }).join('') + '</ul>';
+        blocks.appendChild(tr);
+      }
+      state.days[d.id].forEach(function(a, i){
+        var gi = flat.findIndex(function(f){ return f.area === a; });
+        blocks.appendChild(blockEl(a, d.id, i, state.days[d.id].length, gi === 0, gi === flat.length - 1));
+      });
+      wireDrop(blocks);
+      day.appendChild(lab); day.appendChild(blocks); board.appendChild(day);
+    });
+    renderDropped();
+  }
+
+  function renderDropped(){
+    var d = document.getElementById('dropped');
+    var dr = DATA.dropped;
+    if(!dr || !dr.places.length){ d.hidden = true; return; }
+    d.hidden = false;
+    d.innerHTML = '<summary>' + esc(dr.name) + ' (' + dr.places.length + ')</summary>' + (dr.hint ? '<p class="hint">' + esc(dr.hint) + '</p>' : '') + '<ul></ul>';
+    var ul = d.querySelector('ul');
+    dr.places.forEach(function(p){
+      var li = document.createElement('li');
+      li.innerHTML = '<i class="dot" style="--c:var(--cat-' + p.c + ')"></i><span><a href="' + mapsUrl(p.q) + '" target="_blank" rel="noopener">' + esc(p.n) + '</a>' + (p.note ? ' <span class="note">' + esc(p.note) + '</span>' : '') + '</span>';
+      ul.appendChild(li);
+    });
+  }
+
+  // ---------- moves ----------
+  function locate(areaId){
+    for(var i=0;i<DATA.days.length;i++){ var d = DATA.days[i].id; var k = state.days[d].indexOf(areaId); if(k>=0) return {day:d, dayIdx:i, idx:k}; }
+    return null;
+  }
+  function moveBy(areaId, dir){
+    var loc = locate(areaId); if(!loc) return;
+    var list = state.days[loc.day];
+    list.splice(loc.idx, 1);
+    if(dir < 0){
+      if(loc.idx > 0){ list.splice(loc.idx - 1, 0, areaId); }
+      else if(loc.dayIdx > 0){ state.days[DATA.days[loc.dayIdx - 1].id].push(areaId); }
+      else { list.splice(0, 0, areaId); }
+    } else {
+      if(loc.idx < list.length){ list.splice(loc.idx + 1, 0, areaId); }
+      else if(loc.dayIdx < DATA.days.length - 1){ state.days[DATA.days[loc.dayIdx + 1].id].unshift(areaId); }
+      else { list.push(areaId); }
+    }
+    state = normalize(state); render(); save();
+  }
+  function moveTo(areaId, dayId, index){
+    var loc = locate(areaId); if(!loc) return;
+    state.days[loc.day].splice(loc.idx, 1);
+    if(loc.day === dayId && loc.idx < index) index--;
+    state.days[dayId].splice(index, 0, areaId);
+    state = normalize(state); render(); save();
+  }
+
+  // ---------- drag and drop ----------
+  var dragging = null, ph = null;
+  function clearPlaceholder(){ if(ph && ph.parentNode) ph.parentNode.removeChild(ph); ph = null; document.querySelectorAll('.blocks.over').forEach(function(b){ b.classList.remove('over'); }); }
+  function wireDrop(container){
+    container.addEventListener('dragover', function(ev){
+      if(!dragging) return; ev.preventDefault();
+      try{ ev.dataTransfer.dropEffect = 'move'; }catch(e){}
+      container.classList.add('over');
+      if(!ph){ ph = document.createElement('div'); ph.className = 'placeholder'; }
+      var blocks = Array.prototype.filter.call(container.children, function(c){ return c.classList.contains('block') && !c.classList.contains('dragging') && !c.classList.contains('fixed'); });
+      var before = null;
+      for(var i=0;i<blocks.length;i++){ var r = blocks[i].getBoundingClientRect(); if(ev.clientY < r.top + r.height/2){ before = blocks[i]; break; } }
+      if(before) container.insertBefore(ph, before); else container.appendChild(ph);
+    });
+    container.addEventListener('dragleave', function(ev){ if(!container.contains(ev.relatedTarget)) container.classList.remove('over'); });
+    container.addEventListener('drop', function(ev){
+      ev.preventDefault(); if(!dragging) return;
+      var kids = Array.prototype.slice.call(container.children);
+      var idx = ph ? kids.indexOf(ph) : kids.length;
+      // index among blocks only (exclude the dragged block and the placeholder)
+      var n = 0; for(var i=0;i<idx;i++){ if(kids[i].classList.contains('block') && !kids[i].classList.contains('dragging')) n++; }
+      var id = dragging; clearPlaceholder(); dragging = null;
+      moveTo(id, container.dataset.day, n);
+    });
+  }
+
+  // ---------- events ----------
+  board.addEventListener('click', function(ev){
+    var s = ev.target.closest('[data-star]');
+    if(s){ var id = s.dataset.star; state.stars[id] = !state.stars[id]; if(!state.stars[id]) delete state.stars[id]; render(); save(); return; }
+    var m = ev.target.closest('[data-move]');
+    if(m){ moveBy(m.dataset.area, m.dataset.move === 'up' ? -1 : 1); }
+  });
+  var fb = document.getElementById('filterStar');
+  fb.addEventListener('click', function(){ filterStar = !filterStar; fb.setAttribute('aria-pressed', String(filterStar)); writeFilter(); render(); });
+  resetBtn.addEventListener('click', function(){ if(remoteState){ state = normalize(remoteState); localDirty = false; writeLocal(); notice.hidden = true; render(); } });
+
+  // ---------- boot ----------
+  (function(){
+    var prep = document.getElementById('prep');
+    var bl = document.getElementById('bookings'), cl = document.getElementById('contingencies');
+    (DATA.bookings || []).forEach(function(b){
+      var li = document.createElement('li');
+      li.innerHTML = '<span class="w">' + esc(b.when || '') + '</span><span>' + (b.u ? '<a href="' + esc(b.u) + '" target="_blank" rel="noopener">' + esc(b.n) + '</a>' : '<strong>' + esc(b.n) + '</strong>') + (b.note ? '<span class="note">' + esc(b.note) + '</span>' : '') + '</span>';
+      bl.appendChild(li);
+    });
+    (DATA.contingencies || []).forEach(function(c){ var li = document.createElement('li'); li.textContent = c; cl.appendChild(li); });
+    if(!(DATA.bookings || []).length && !(DATA.contingencies || []).length) prep.hidden = true;
+    var apps = document.getElementById('apps'), ag = document.getElementById('appsgrid');
+    (DATA.apps || []).forEach(function(g){
+      var box = document.createElement('div');
+      box.innerHTML = '<h3>' + esc(g.g) + '</h3>';
+      var ul = document.createElement('ul');
+      g.items.forEach(function(it){
+        var li = document.createElement('li');
+        li.innerHTML = (it.u ? '<a href="' + esc(it.u) + '" target="_blank" rel="noopener">' + esc(it.n) + '</a>' : '<strong>' + esc(it.n) + '</strong>') + (it.note ? '<span class="note">' + esc(it.note) + '</span>' : '');
+        ul.appendChild(li);
+      });
+      box.appendChild(ul); ag.appendChild(box);
+    });
+    if(!(DATA.apps || []).length) apps.hidden = true;
+    try{ if(localStorage.getItem(LS_KEY + '-apps') === 'open') apps.open = true; }catch(e){}
+    apps.addEventListener('toggle', function(){ try{ localStorage.setItem(LS_KEY + '-apps', apps.open ? 'open' : 'closed'); }catch(e){} });
+    try{ if(localStorage.getItem(LS_KEY + '-prep') === 'closed') prep.open = false; }catch(e){}
+    prep.addEventListener('toggle', function(){ try{ localStorage.setItem(LS_KEY + '-prep', prep.open ? 'open' : 'closed'); }catch(e){} });
+  })();
+  if(DATA.home){ document.getElementById('home').innerHTML = 'Home base: <a href="' + mapsUrl(DATA.home.q) + '" target="_blank" rel="noopener">' + esc(DATA.home.n) + '</a>' + (DATA.home.note ? ' <span class="note">' + esc(DATA.home.note) + '</span>' : ''); }
+  filterStar = readFilter(); fb.setAttribute('aria-pressed', String(filterStar));
+  var local = readLocal();
+  if(local){ state = normalize(local); localDirty = true; setStatus('Saved on this device'); } else { setStatus('Default plan'); }
+  render();
+
+  if(window.claude && window.claude.use){
+    Promise.all([window.claude.use('db'), window.claude.use('user')]).then(function(res){
+      db = res[0]; var user = res[1];
+      if(!db){ setStatus(local ? 'Saved on this device' : 'Default plan'); return; }
+      docRef = db.doc('plan/' + CITY);
+      var canWrite = user && user.can ? user.can('data.write') : null;
+      Promise.resolve(canWrite).then(function(cw){ if(cw === false) writer = false; if(cw === true) writer = true; }).catch(function(){});
+      docRef.onSnapshot(function(snap){
+        if(snap.exists){
+          remoteState = snap.data();
+          if(writer !== false || !localDirty){
+            state = normalize(remoteState); localDirty = false; writeLocal(); render();
+            setStatus(writer === false ? 'Shared plan' : 'Shared plan, live', true);
+            notice.hidden = true;
+          } else {
+            showNotice('You have local changes. The shared plan has been updated by the trip owner.', true);
+          }
+        } else {
+          // nothing shared yet: a writer's local or default state becomes the shared one on their next change
+          setStatus(local ? 'Saved on this device' : 'Default plan');
+        }
+      }, function(){ setStatus(local ? 'Saved on this device' : 'Default plan'); });
+    }).catch(function(){});
+  }
+})();
+</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.register("/trip/sw.js",{scope:"/trip/"}).catch(function(){});}</script></body></html>

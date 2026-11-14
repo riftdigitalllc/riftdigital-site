@@ -1,0 +1,16 @@
+{
+ "name": "Bangkok Trip Board",
+ "short_name": "Bangkok trip",
+ "start_url": "/trip/bangkok/",
+ "scope": "/trip/bangkok/",
+ "display": "standalone",
+ "background_color": "#f4f2ec",
+ "theme_color": "#0f6b66",
+ "icons": [
+  {
+   "src": "/favicon.png",
+   "sizes": "any",
+   "type": "image/png"
+  }
+ ]
+}

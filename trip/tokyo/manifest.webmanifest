@@ -1,0 +1,16 @@
+{
+ "name": "Tokyo Trip Board",
+ "short_name": "Tokyo trip",
+ "start_url": "/trip/tokyo/",
+ "scope": "/trip/tokyo/",
+ "display": "standalone",
+ "background_color": "#f4f2ec",
+ "theme_color": "#27366b",
+ "icons": [
+  {
+   "src": "/favicon.png",
+   "sizes": "any",
+   "type": "image/png"
+  }
+ ]
+}
