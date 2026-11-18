@@ -1,6 +1,6 @@
 // Trip boards offline cache. Network first so republished pages show up when online;
 // cache fallback so the pages still open with no signal after one visit.
-var CACHE = 'tripboards-v202611140054';
+var CACHE = 'tripboards-v202611172121';
 var PRECACHE = ['/trip/', '/trip/tokyo/', '/trip/bangkok/'];
 self.addEventListener('install', function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(PRECACHE); }).then(function(){ return self.skipWaiting(); }));
